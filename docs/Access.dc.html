@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<title>Эрх ба тохиргоо</title>
+<style>body{margin:0;background:#0B1117}</style>
+<script src="./dc-lite.js" defer></script>
+</head>
+<body>
+<template id="dc-root">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#0B1117}
+a{color:#4EA1FF}a:hover{color:#8CC2FF}
+select,input,button{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #0B1117; color: #E6EDF3; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px">
+
+<header style="border-bottom: 1px solid #22303F; background: #0E151D">
+<div style="max-width: 1440px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4EA1FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><circle cx="17.5" cy="17.5" r="3.5"></circle></svg>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-size: 17px; font-weight: 600">Мэдээллийн нэгдсэн цонх</div>
+<div style="font-size: 12px; color: #93A3B5">Замын хөдөлгөөний удирдлагын төв · AI аналитик + VMS</div>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<span style="font-size: 12px; padding: 4px 8px; border: 1px dashed #D29922; color: #E3B341; border-radius: 6px">Жишээ өгөгдөл</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">2026.10.28 14:32</span>
+<button type="button" style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #17212C; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3; cursor: pointer"><span style="width: 24px; height: 24px; border-radius: 50%; background: #3A2A12; color: #E3B341; font-size: 11px; display: flex; align-items: center; justify-content: center">СА</span>Системийн админ</button>
+</div>
+</div>
+<nav aria-label="Үндсэн цэс" style="max-width: 1440px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; gap: 4px">
+<a href="Main.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Нэгдсэн тойм</a>
+<a href="Cameras.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Камерын төлөв</a>
+<a href="Event.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Арга хэмжээний горим</a>
+<a href="Reports.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Архив ба тайлан</a>
+<a href="Access.dc.html" style="padding: 12px 14px; color: #E6EDF3; text-decoration: none; border-bottom: 2px solid #4EA1FF; font-weight: 500">Эрх ба тохиргоо</a>
+</nav>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 20px 24px 40px; display: flex; flex-direction: column; gap: 16px">
+
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 600">Хэрэглэгчийн эрхийн удирдлага</h1>
+<span style="font-size: 13px; color: #93A3B5">Байгууллага → үүрэг → мэдээллийн хүрээ (нутаг дэвсгэр, камерын бүлэг) гэсэн 3 түвшинд хязгаарлана</span>
+</div>
+<div style="display: flex; gap: 8px">
+<button type="button" style="min-height: 40px; padding: 0 14px; background: transparent; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3; cursor: pointer">Аудитын бүртгэл</button>
+<button type="button" style="min-height: 40px; padding: 0 14px; background: #4EA1FF; border: 0; border-radius: 8px; color: #06121F; font-weight: 600; cursor: pointer">+ Үүрэг нэмэх</button>
+</div>
+</div>
+
+<section aria-label="Эрхийн матриц" style="background: #121A23; border: 1px solid #22303F; border-radius: 10px; overflow: hidden">
+<div style="padding: 14px 16px; border-bottom: 1px solid #22303F; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Байгууллага, үүргийн эрхийн матриц</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: #93A3B5">
+<span style="display: flex; align-items: center; gap: 6px"><span style="padding: 2px 6px; border-radius: 4px; background: #12263A; color: #8CC2FF; font-weight: 600">Бүрэн</span>харах, засах</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="padding: 2px 6px; border-radius: 4px; background: #1B2633; color: #D0D8E2">Харах</span>зөвхөн унших</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="padding: 2px 6px; border-radius: 4px; border: 1px dashed #5B6B7D; color: #D0D8E2">Хүрээтэй</span>өөрийн нутаг дэвсгэр</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="color: #6B7C90">—</span>хаалттай</span>
+</div>
+</div>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1180px">
+<thead>
+<tr style="background: #0E151D; color: #93A3B5; font-size: 12px; text-align: left">
+<th style="padding: 10px 12px; font-weight: 500">Байгууллага · үүрэг</th>
+<template data-sc="for" list="{{cols}}" as="c" hint-placeholder-count="9"><th style="padding: 10px 8px; font-weight: 500; text-align: center">{{c}}</th></template>
+<th style="padding: 10px 12px; font-weight: 500; text-align: right">Хэрэглэгч</th>
+</tr>
+</thead>
+<tbody>
+<template data-sc="for" list="{{roles}}" as="r" hint-placeholder-count="8">
+<tr style="border-top: 1px solid #1B2633">
+<td style="padding: 10px 12px"><div style="display: flex; flex-direction: column; gap: 2px"><span>{{r.org}}</span><span style="font-size: 12px; color: #93A3B5">{{r.role}}</span></div></td>
+<template data-sc="for" list="{{r.cells}}" as="x" hint-placeholder-count="9"><td style="padding: 10px 8px; text-align: center"><span style="{{x.style}}">{{x.t}}</span></td></template>
+<td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">{{r.users}}</td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<section aria-label="Нэвтрэлтийн аюулгүй байдал" style="flex: 1 1 380px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0 0 8px; font-size: 15px; font-weight: 600">Нэвтрэлт ба аюулгүй байдал</h2>
+<template data-sc="for" list="{{sec}}" as="s" hint-placeholder-count="6">
+<label style="display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; border-bottom: 1px solid #1B2633; font-size: 13px">
+<span style="display: flex; flex-direction: column; gap: 2px"><span>{{s.t}}</span><span style="font-size: 12px; color: #93A3B5">{{s.d}}</span></span>
+<input type="checkbox" checked="{{s.on}}" style="width: 18px; height: 18px; flex-shrink: 0">
+</label>
+</template>
+</section>
+
+<section aria-label="Өргөтгөл" style="flex: 2 1 560px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Модуль, виджет · өргөтгөл</h2>
+<span style="font-size: 12px; color: #93A3B5">Шинэ мэдээллийн эх үүсвэрийг REST API / webhook-оор холбож, виджет нэмнэ</span>
+</div>
+<button type="button" style="min-height: 38px; padding: 0 12px; background: #17212C; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3; cursor: pointer">+ Виджет нэмэх</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px">
+<template data-sc="for" list="{{mods}}" as="m" hint-placeholder-count="6">
+<div style="padding: 12px; background: #0E151D; border: 1px solid #1B2633; border-radius: 8px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-size: 13px; font-weight: 500">{{m.n}}</span><span style="{{m.style}}">{{m.s}}</span></div>
+<span style="font-size: 12px; color: #93A3B5">{{m.src}}</span>
+</div>
+</template>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h3 style="margin: 4px 0 6px; font-size: 13px; font-weight: 600">Ашиглагч байгууллагуудын санал</h3>
+<template data-sc="for" list="{{reqs}}" as="q" hint-placeholder-count="4">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 150px 120px; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid #1B2633; font-size: 13px">
+<span>{{q.t}}</span>
+<span style="color: #93A3B5; font-size: 12px">{{q.org}}</span>
+<span style="{{q.style}}">{{q.s}}</span>
+</div>
+</template>
+</div>
+</section>
+</div>
+
+</main>
+</div>
+</template>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var cols = ['Тойм', 'Камерын төлөв', 'Газрын зураг', 'AI аналитик', 'Шууд дүрс', 'Арга хэмжээ', 'Архив, тайлан', 'Экспорт', 'Эрх удирдах'];
+    var S = {
+      F: ['Бүрэн', { padding: '3px 8px', borderRadius: '4px', background: '#12263A', color: '#8CC2FF', fontWeight: 600, fontSize: '12px' }],
+      V: ['Харах', { padding: '3px 8px', borderRadius: '4px', background: '#1B2633', color: '#D0D8E2', fontSize: '12px' }],
+      S: ['Хүрээтэй', { padding: '2px 7px', borderRadius: '4px', border: '1px dashed #5B6B7D', color: '#D0D8E2', fontSize: '12px' }],
+      N: ['—', { color: '#6B7C90' }]
+    };
+    var R = [
+      ['Замын хөдөлгөөний удирдлагын төв', 'Системийн админ', 'FFFFFFFFF', 4],
+      ['Замын хөдөлгөөний удирдлагын төв', 'Ахлах оператор', 'FFFFFFFFN', 12],
+      ['Замын хөдөлгөөний удирдлагын төв', 'Оператор', 'VVVVVVVNN', 46],
+      ['Дүүргийн дэд төв (9)', 'Оператор', 'SSSSSNSSN', 54],
+      ['Цагдаагийн ерөнхий газар · Замын цагдаа', 'Хянагч', 'VVVVVVVVN', 22],
+      ['Онцгой байдлын ерөнхий газар', 'Хянагч', 'VNVNVVNNN', 8],
+      ['Төрийн тусгай хамгаалалтын газар', 'Хянагч', 'VNVNVFVNN', 6],
+      ['Нийслэлийн Засаг даргын Тамгын газар', 'Удирдлага', 'VVNVNVVVN', 5]
+    ];
+    var roles = R.map(function (r) {
+      return { org: r[0], role: r[1], users: r[3], cells: r[2].split('').map(function (k) { return { t: S[k][0], style: S[k][1] }; }) };
+    });
+    var sec = [
+      { t: 'Байгууллагын нэг нэвтрэлт (LDAP / AD, SSO)', d: 'Төрийн байгууллагын домэйн хэрэглэгч', on: true },
+      { t: 'Хоёр шатлалт баталгаажуулалт (2FA)', d: 'Бүх гадаад байгууллагад заавал', on: true },
+      { t: 'IP / VPN хязгаарлалт', d: 'Зөвшөөрсөн сүлжээнээс л нэвтэрнэ', on: true },
+      { t: 'Үйлдлийн аудитын бүртгэл', d: 'Хэн, хэзээ, юуг харсан, экспортолсон', on: true },
+      { t: 'Сессийн хугацаа · 30 минут', d: 'Идэвхгүй үед автоматаар гаргана', on: true },
+      { t: 'Экспортод усан тэмдэг', d: 'Хэрэглэгчийн нэр, огноо', on: false }
+    ];
+    var MS = {
+      on: ['Идэвхтэй', { fontSize: '11px', padding: '2px 6px', borderRadius: '4px', background: '#12263A', color: '#8CC2FF' }],
+      dev: ['Хөгжүүлж буй', { fontSize: '11px', padding: '2px 6px', borderRadius: '4px', background: '#2E2410', color: '#E3B341' }],
+      plan: ['Төлөвлөсөн', { fontSize: '11px', padding: '2px 6px', borderRadius: '4px', background: '#1B2633', color: '#B8C4D2' }]
+    };
+    var mods = [
+      ['VMS холболт', 'ONVIF / VMS SDK · камерын төлөв, дүрс', 'on'],
+      ['AI аналитик', 'Зөрчил, хүн тоолох, урсгал · REST', 'on'],
+      ['Газрын зураг (GIS)', 'Нийслэлийн суурь зураг · WMS', 'on'],
+      ['Гэрлэн дохионы удирдлага', 'ATCS · уулзварын төлөв', 'dev'],
+      ['Нийтийн тээвэр', 'Автобусны GPS · Нийтийн тээврийн газар', 'plan'],
+      ['Агаарын чанар', 'Мэдрэгчийн сүлжээ · API', 'plan']
+    ].map(function (m) { return { n: m[0], src: m[1], s: MS[m[2]][0], style: MS[m[2]][1] }; });
+    var QS = {
+      done: ['Нэвтэрсэн', { fontSize: '12px', color: '#8CC2FF' }],
+      dev: ['Хөгжүүлж буй', { fontSize: '12px', color: '#E3B341' }],
+      new: ['Хүлээн авсан', { fontSize: '12px', color: '#B8C4D2' }]
+    };
+    var reqs = [
+      ['Осол гарсан байршлын дулааны зураг (heatmap)', 'Замын цагдаа', 'dev'],
+      ['Арга хэмжээний үеийн хаалттай замын давхарга', 'НЗДТГ', 'done'],
+      ['Ослын үед ойрын камерыг автоматаар нээх', 'ОБЕГ', 'new'],
+      ['Дүүргийн дэд төвийн долоо хоногийн автомат тайлан', 'Дэд төвүүд', 'done']
+    ].map(function (q) { return { t: q[0], org: q[1], s: QS[q[2]][0], style: QS[q[2]][1] }; });
+    return { cols: cols, roles: roles, sec: sec, mods: mods, reqs: reqs };
+  }
+}
+</script>
+</body>
+</html>

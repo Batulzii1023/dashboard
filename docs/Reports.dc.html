@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<title>Архив ба тайлан</title>
+<style>body{margin:0;background:#0B1117}</style>
+<script src="./dc-lite.js" defer></script>
+</head>
+<body>
+<template id="dc-root">
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#0B1117}
+a{color:#4EA1FF}a:hover{color:#8CC2FF}
+select,input,button{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #0B1117; color: #E6EDF3; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px">
+
+<header style="border-bottom: 1px solid #22303F; background: #0E151D">
+<div style="max-width: 1440px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4EA1FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><circle cx="17.5" cy="17.5" r="3.5"></circle></svg>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-size: 17px; font-weight: 600">Мэдээллийн нэгдсэн цонх</div>
+<div style="font-size: 12px; color: #93A3B5">Замын хөдөлгөөний удирдлагын төв · AI аналитик + VMS</div>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<span style="font-size: 12px; padding: 4px 8px; border: 1px dashed #D29922; color: #E3B341; border-radius: 6px">Жишээ өгөгдөл</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">2026.10.28 14:32</span>
+<button type="button" style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #17212C; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3; cursor: pointer"><span style="width: 24px; height: 24px; border-radius: 50%; background: #1F3A5C; color: #8CC2FF; font-size: 11px; display: flex; align-items: center; justify-content: center">ЗХ</span>ЗХУТ · Ахлах оператор</button>
+</div>
+</div>
+<nav aria-label="Үндсэн цэс" style="max-width: 1440px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; gap: 4px">
+<a href="Main.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Нэгдсэн тойм</a>
+<a href="Cameras.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Камерын төлөв</a>
+<a href="Event.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Арга хэмжээний горим</a>
+<a href="Reports.dc.html" style="padding: 12px 14px; color: #E6EDF3; text-decoration: none; border-bottom: 2px solid #4EA1FF; font-weight: 500">Архив ба тайлан</a>
+<a href="Access.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Эрх ба тохиргоо</a>
+</nav>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 20px 24px 40px; display: flex; flex-direction: column; gap: 16px">
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 600">Цахим архив, харьцуулалт, тайлан</h1>
+<span style="font-size: 13px; color: #93A3B5">Нэгдсэн цонхны бүх үзүүлэлт 15 минут тутам архивлагдана · 5 жил хадгална</span>
+</div>
+
+<section aria-label="Харьцуулалт" style="background: #121A23; border: 1px solid #22303F; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Харьцуулсан мэдээлэл</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<template data-sc="for" list="{{presets}}" as="p" hint-placeholder-count="3">
+<button type="button" onClick="{{p.pick}}" aria-pressed="{{p.on}}" style="{{p.style}}">{{p.label}}</button>
+</template>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end">
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="r-a" style="font-size: 12px; color: #93A3B5">Үе А</label><input id="r-a" type="text" value="{{cmp.a}}" style="width: 200px; min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="r-b" style="font-size: 12px; color: #93A3B5">Үе Б</label><input id="r-b" type="text" value="{{cmp.b}}" style="width: 200px; min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="r-d" style="font-size: 12px; color: #93A3B5">Нутаг дэвсгэр</label><select id="r-d" style="min-width: 150px; min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"><option>Бүх дүүрэг</option><option>Сүхбаатар</option><option>Хан-Уул</option></select></div>
+</div>
+</div>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 760px">
+<thead><tr style="color: #93A3B5; font-size: 12px; text-align: left"><th style="padding: 8px 6px; font-weight: 500">Үзүүлэлт</th><th style="padding: 8px 6px; font-weight: 500; text-align: right">Үе А</th><th style="padding: 8px 6px; font-weight: 500; text-align: right">Үе Б</th><th style="padding: 8px 6px; font-weight: 500; width: 260px">А / Б</th><th style="padding: 8px 6px; font-weight: 500; text-align: right">Өөрчлөлт</th></tr></thead>
+<tbody>
+<template data-sc="for" list="{{cmp.rows}}" as="r" hint-placeholder-count="7">
+<tr style="border-top: 1px solid #1B2633">
+<td style="padding: 10px 6px">{{r.label}}</td>
+<td style="padding: 10px 6px; text-align: right; font-family: 'IBM Plex Mono', monospace; color: #B8C4D2">{{r.a}}</td>
+<td style="padding: 10px 6px; text-align: right; font-family: 'IBM Plex Mono', monospace">{{r.b}}</td>
+<td style="padding: 10px 6px"><div style="display: flex; flex-direction: column; gap: 3px"><div style="{{r.barA}}"></div><div style="{{r.barB}}"></div></div></td>
+<td style="padding: 10px 6px; text-align: right; font-family: 'IBM Plex Mono', monospace"><span style="{{r.dStyle}}">{{r.d}}</span></td>
+</tr>
+</template>
+</tbody>
+</table>
+</div>
+<div style="display: flex; gap: 16px; font-size: 12px; color: #93A3B5"><span style="display: flex; align-items: center; gap: 6px"><span style="width: 14px; height: 6px; background: #5B6B7D; border-radius: 2px"></span>Үе А</span><span style="display: flex; align-items: center; gap: 6px"><span style="width: 14px; height: 6px; background: #4EA1FF; border-radius: 2px"></span>Үе Б</span></div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<section aria-label="Тайлан гаргах" style="flex: 3 1 560px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Статистик тайлан гаргах</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="t-tpl" style="font-size: 12px; color: #93A3B5">Тайлангийн загвар</label><select id="t-tpl" style="min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"><option>Камерын ажиллагааны тайлан</option><option>AI аналитикийн зөрчлийн тайлан</option><option>Иргэдийн эрчмийн тайлан</option><option>Арга хэмжээний дүгнэлт</option><option>Нэгдсэн (бүх хэсэг)</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="t-per" style="font-size: 12px; color: #93A3B5">Тайлант хугацаа</label><select id="t-per" style="min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"><option>Сар · 2026.10</option><option>Өдөр</option><option>7 хоног</option><option>Улирал</option><option>Жил</option><option>Дурын</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="t-grp" style="font-size: 12px; color: #93A3B5">Бүлэглэх</label><select id="t-grp" style="min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"><option>Дүүрэг · хороо</option><option>Камерын төрөл</option><option>Байршил</option><option>AI ангилал</option></select></div>
+</div>
+<label style="display: flex; align-items: center; gap: 10px; font-size: 13px; min-height: 32px"><input type="checkbox" checked="" style="width: 18px; height: 18px">Өмнөх тайлант хугацаатай харьцуулсан өөрчлөлтийг оруулах</label>
+<label style="display: flex; align-items: center; gap: 10px; font-size: 13px; min-height: 32px"><input type="checkbox" checked="" style="width: 18px; height: 18px">Газрын зураг, график хавсаргах</label>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; color: #93A3B5">Формат</span>
+<div role="group" aria-label="Формат" style="display: flex; flex-wrap: wrap; gap: 8px">
+<template data-sc="for" list="{{formats}}" as="f" hint-placeholder-count="6">
+<button type="button" onClick="{{f.flip}}" aria-pressed="{{f.on}}" style="{{f.style}}"><span style="font-weight: 600">{{f.label}}</span><span style="font-size: 11px; color: #93A3B5">{{f.sub}}</span></button>
+</template>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" style="min-height: 42px; padding: 0 18px; background: #4EA1FF; color: #06121F; border: 0; border-radius: 8px; font-weight: 600; cursor: pointer">Гаргах · {{fmtCount}} формат</button>
+<button type="button" style="min-height: 42px; padding: 0 16px; background: transparent; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3; cursor: pointer">Хуваарь тохируулах</button>
+</div>
+</section>
+
+<section aria-label="Архив" style="flex: 2 1 400px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; display: flex; flex-direction: column">
+<div style="padding: 14px 16px; border-bottom: 1px solid #22303F; display: flex; flex-direction: column; gap: 2px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Цахим архив</h2>
+<span style="font-size: 12px; color: #93A3B5">Хадгалсан агшин зураг ба тайлан · 2.4 ТБ / 20 ТБ</span>
+</div>
+<template data-sc="for" list="{{archive}}" as="a" hint-placeholder-count="6">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid #1B2633">
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+<span style="font-size: 13px">{{a.name}}</span>
+<span style="font-size: 12px; color: #93A3B5">{{a.meta}}</span>
+</div>
+<button type="button" style="min-height: 36px; padding: 0 12px; background: #17212C; border: 1px solid #22303F; border-radius: 6px; color: #E6EDF3; font-size: 12px; cursor: pointer; flex-shrink: 0">{{a.act}}</button>
+</div>
+</template>
+</section>
+</div>
+
+</main>
+</div>
+</template>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { preset: 'naadam', fmts: { PDF: true, XLSX: true } };
+  }
+  renderVals() {
+    var self = this;
+    var st = this.state || {};
+    var fmt = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+    var DATA = {
+      naadam: { label: 'Наадам 2025 / 2026', a: '2025.07.11 – 07.13', b: '2026.07.11 – 07.13', rows: [
+        ['Хамгийн их цугларалт (хүн)', 41200, 44740], ['AI зөрчил · нийт', 52310, 47880], ['Хурд хэтрүүлэлт', 15400, 13020], ['Буруу зогсоол', 12800, 10950], ['Явган хүний гарц зөрчил', 7900, 8410], ['Ажиллаагүй камер (дундаж)', 61, 44], ['Иргэдийн эрчим (хүн/цаг, оргил)', 9800, 11240]
+      ] },
+      month: { label: '2026.09 / 2026.10', a: '2026.09.01 – 09.30', b: '2026.10.01 – 10.28', rows: [
+        ['Камерын бэлэн байдал (%)', 94, 96], ['AI зөрчил · нийт', 512400, 498110], ['Хурд хэтрүүлэлт', 178300, 171900], ['Буруу зогсоол', 106200, 109850], ['Явган хүний гарц зөрчил', 64100, 62300], ['Ажиллаагүй камер (дундаж)', 71, 52], ['Иргэдийн эрчим (хүн/цаг, дундаж)', 10200, 11810]
+      ] },
+      year: { label: '2025 / 2026 (10 сар)', a: '2025.01 – 10', b: '2026.01 – 10', rows: [
+        ['Холбогдсон камер', 1012, 1248], ['AI зөрчил · нийт', 4210000, 5108000], ['Хурд хэтрүүлэлт', 1502000, 1720000], ['Буруу зогсоол', 902000, 1066000], ['Явган хүний гарц зөрчил', 510000, 598000], ['Ажиллаагүй камер (дундаж)', 88, 57], ['Иргэдийн эрчим (хүн/цаг, дундаж)', 9100, 10650]
+      ] }
+    };
+    var key = DATA[st.preset] ? st.preset : 'naadam';
+    var presets = Object.keys(DATA).map(function (k) {
+      var on = k === key;
+      return { label: DATA[k].label, on: on, pick: function () { self.setState({ preset: k }); },
+        style: { minHeight: '36px', padding: '0 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', background: on ? '#1F3A5C' : 'transparent', color: on ? '#E6EDF3' : '#93A3B5', border: '1px solid ' + (on ? '#2F5A8A' : '#22303F') } };
+    });
+    var d = DATA[key];
+    var rows = d.rows.map(function (r) {
+      var mx = Math.max(r[1], r[2]);
+      var ch = (r[2] - r[1]) / r[1] * 100;
+      var good = /зөрчил|Хурд|зогсоол|Ажиллаагүй/.test(r[0]) ? ch < 0 : ch > 0;
+      return { label: r[0], a: fmt(r[1]), b: fmt(r[2]),
+        barA: { width: (r[1] / mx * 100) + '%', height: '6px', background: '#5B6B7D', borderRadius: '2px' },
+        barB: { width: (r[2] / mx * 100) + '%', height: '6px', background: '#4EA1FF', borderRadius: '2px' },
+        d: (ch > 0 ? '+' : '') + ch.toFixed(1) + '%',
+        dStyle: { color: good ? '#8CC2FF' : '#FFA28B' } };
+    });
+    var F = [['PDF', 'Хэвлэх'], ['XLSX', 'Excel'], ['CSV', 'Түүхий өгөгдөл'], ['DOCX', 'Word'], ['PNG', 'График'], ['JSON / API', 'Систем хооронд']];
+    var fm = st.fmts || {};
+    var formats = F.map(function (f) {
+      var on = !!fm[f[0]];
+      return { label: f[0], sub: f[1], on: on,
+        flip: function () { var n = Object.assign({}, fm); n[f[0]] = !on; self.setState({ fmts: n }); },
+        style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px', minWidth: '110px', minHeight: '52px', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', color: '#E6EDF3', textAlign: 'left', background: on ? '#12263A' : '#0B1117', border: '1px solid ' + (on ? '#4EA1FF' : '#22303F') } };
+    });
+    var fmtCount = F.filter(function (f) { return fm[f[0]]; }).length;
+    var archive = [
+      { name: 'Наадам 2026 · дүгнэлт', meta: '07.11 – 07.13 · агшин 288 · 1.2 ГБ', act: 'Нээх' },
+      { name: 'Сарын тайлан · 2026.09', meta: 'PDF, XLSX · 09.30 23:59 автоматаар', act: 'Татах' },
+      { name: 'Агшин зураг · 2026.10.28 14:30', meta: 'Нэгдсэн цонхны бүрэн төлөв', act: 'Сэргээх' },
+      { name: 'Гадаадын зочдын айлчлал · 2026.08.21', meta: 'Арга хэмжээний горим · 96 агшин', act: 'Нээх' },
+      { name: 'Улирлын тайлан · 2026 III', meta: 'PDF, DOCX · 10.05', act: 'Татах' },
+      { name: 'Шинэ жилийн баяр · 2025.12.31', meta: 'Сүхбаатарын талбай · 140 агшин', act: 'Нээх' }
+    ];
+    return { presets: presets, cmp: { a: d.a, b: d.b, rows: rows }, formats: formats, fmtCount: fmtCount, archive: archive };
+  }
+}
+</script>
+</body>
+</html>

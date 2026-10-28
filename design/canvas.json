@@ -1,0 +1,76 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Access.dc.html": {
+      "expand": "fill",
+      "h": 1400,
+      "title": "5. Хэрэглэгчийн эрх ба өргөтгөл",
+      "w": 1440,
+      "x": 0,
+      "y": 3280
+    },
+    "Cameras.dc.html": {
+      "expand": "fill",
+      "h": 1640,
+      "is_interactive": true,
+      "title": "2. Камерын төлөв ба ажиллагаа",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "Event.dc.html": {
+      "expand": "fill",
+      "h": 1400,
+      "title": "3. Онцгой арга хэмжээний горим",
+      "w": 1440,
+      "x": 0,
+      "y": 1760
+    },
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 1640,
+      "is_interactive": true,
+      "title": "1. Нэгдсэн тойм",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "Reports.dc.html": {
+      "expand": "fill",
+      "h": 1400,
+      "is_interactive": true,
+      "title": "4. Архив, харьцуулалт, тайлан",
+      "w": 1440,
+      "x": 1520,
+      "y": 1760
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-28T09:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "t1": {
+      "kind": "title1",
+      "maxW": 2960,
+      "text": "Мэдээллийн нэгдсэн цонх — AI аналитик + VMS",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Cameras.dc.html",
+    "Event.dc.html",
+    "Reports.dc.html",
+    "Access.dc.html"
+  ],
+  "pages": [],
+  "title": "Мэдээллийн нэгдсэн цонх (дашборд)"
+}

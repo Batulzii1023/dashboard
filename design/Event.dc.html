@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<title>Арга хэмжээний горим</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#0B1117}
+a{color:#4EA1FF}a:hover{color:#8CC2FF}
+select,input,button{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #0B1117; color: #E6EDF3; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px">
+
+<header style="border-bottom: 1px solid #22303F; background: #0E151D">
+<div style="max-width: 1440px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4EA1FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><circle cx="17.5" cy="17.5" r="3.5"></circle></svg>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-size: 17px; font-weight: 600">Мэдээллийн нэгдсэн цонх</div>
+<div style="font-size: 12px; color: #93A3B5">Замын хөдөлгөөний удирдлагын төв · AI аналитик + VMS</div>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<span style="font-size: 12px; padding: 4px 8px; border: 1px dashed #D29922; color: #E3B341; border-radius: 6px">Жишээ өгөгдөл</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">2026.07.11 10:48</span>
+<button type="button" style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #17212C; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3; cursor: pointer"><span style="width: 24px; height: 24px; border-radius: 50%; background: #1F3A5C; color: #8CC2FF; font-size: 11px; display: flex; align-items: center; justify-content: center">ЗХ</span>ЗХУТ · Ахлах оператор</button>
+</div>
+</div>
+<nav aria-label="Үндсэн цэс" style="max-width: 1440px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; gap: 4px">
+<a href="Main.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Нэгдсэн тойм</a>
+<a href="Cameras.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Камерын төлөв</a>
+<a href="Event.dc.html" style="padding: 12px 14px; color: #E6EDF3; text-decoration: none; border-bottom: 2px solid #4EA1FF; font-weight: 500">Арга хэмжээний горим</a>
+<a href="Reports.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Архив ба тайлан</a>
+<a href="Access.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Эрх ба тохиргоо</a>
+</nav>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 20px 24px 40px; display: flex; flex-direction: column; gap: 16px">
+
+<section aria-label="Идэвхтэй арга хэмжээ" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 18px; background: #1A1F14; border: 1px solid #5C4A12; border-radius: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; color: #E3B341; letter-spacing: 0.06em; font-weight: 600">АРГА ХЭМЖЭЭНИЙ ГОРИМ ИДЭВХТЭЙ</span>
+<h1 style="margin: 0; font-size: 22px; font-weight: 600">Үндэсний их баяр наадам 2026</h1>
+<span style="font-size: 13px; color: #C9B98A">07.11 – 07.13 · 4 бүс · 128 камер · хамтрагч: Цагдаагийн ерөнхий газар, ОБЕГ, НЗДТГ</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="ev-sel" style="font-size: 12px; color: #C9B98A">Арга хэмжээ</label>
+<select id="ev-sel" style="min-width: 260px; min-height: 40px; padding: 0 10px; background: #0B1117; border: 1px solid #5C4A12; border-radius: 8px; color: #E6EDF3"><option>Үндэсний их баяр наадам 2026</option><option>Төрийн ёслолын арга хэмжээ</option><option>Гадаадын зочдын айлчлал</option><option>Шинэ жилийн баяр · Сүхбаатарын талбай</option><option>+ Шинэ арга хэмжээ үүсгэх</option></select>
+</div>
+<button type="button" style="min-height: 40px; padding: 0 14px; background: transparent; border: 1px solid #5C4A12; border-radius: 8px; color: #E3B341; cursor: pointer">Видео хана руу илгээх</button>
+</div>
+</section>
+
+<section aria-label="Бүсүүд" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px">
+<sc-for list="{{zones}}" as="z" hint-placeholder-count="4">
+<div style="padding: 16px; background: #121A23; border: 1px solid #22303F; border-radius: 10px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">{{z.name}}</h2>
+<span style="font-size: 12px; color: #93A3B5">{{z.sub}}</span>
+</div>
+<span style="{{z.badge}}">{{z.level}}</span>
+</div>
+<div style="display: flex; align-items: baseline; gap: 8px">
+<span style="font-size: 30px; font-weight: 600; font-family: 'IBM Plex Mono', monospace">{{z.count}}</span>
+<span style="font-size: 12px; color: #93A3B5">хүн · багтаамжийн {{z.pct}}</span>
+</div>
+<div style="height: 8px; background: #0B1117; border-radius: 4px; overflow: hidden"><div style="{{z.bar}}"></div></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; font-size: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="color: #93A3B5">Нягтрал</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">{{z.dens}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="color: #93A3B5">Камер</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">{{z.cams}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="color: #93A3B5">AI сэрэмжлүүлэг</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">{{z.alerts}}</span></div>
+</div>
+</div>
+</sc-for>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<section aria-label="Шууд дүрс" style="flex: 3 1 620px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Шууд дүрс · Сүхбаатарын талбай</h2>
+<div style="display: flex; gap: 6px"><button type="button" style="min-height: 34px; padding: 0 10px; background: #17212C; border: 1px solid #22303F; border-radius: 6px; color: #E6EDF3; font-size: 12px">2×3</button><button type="button" style="min-height: 34px; padding: 0 10px; background: transparent; border: 1px solid #22303F; border-radius: 6px; color: #93A3B5; font-size: 12px">3×3</button><button type="button" style="min-height: 34px; padding: 0 10px; background: transparent; border: 1px solid #22303F; border-radius: 6px; color: #93A3B5; font-size: 12px">VMS-д нээх</button></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{tiles}}" as="t" hint-placeholder-count="6">
+<div style="position: relative; aspect-ratio: 16 / 9; background: #0D141C; border: 1px solid #1B2633; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3A4A5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 10l5-3v10l-5-3z"></path><rect x="3" y="6" width="12" height="12" rx="2"></rect></svg>
+<span style="position: absolute; left: 8px; top: 6px; font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #B8C4D2">{{t.id}}</span>
+<span style="position: absolute; left: 8px; bottom: 6px; font-size: 11px; color: #E6EDF3">{{t.name}}</span>
+<span style="position: absolute; right: 8px; bottom: 6px; font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #8CC2FF">{{t.ppl}}</span>
+<span style="position: absolute; right: 8px; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: #3FB950"></span>
+</div>
+</sc-for>
+</div>
+<span style="font-size: 12px; color: #93A3B5">Дүрсийг VMS-ийн SDK/RTSP урсгалаар харуулна · хүрээн дээр AI хүн тоолох давхарга</span>
+</section>
+
+<section aria-label="AI сэрэмжлүүлэг" style="flex: 2 1 380px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; display: flex; flex-direction: column">
+<div style="padding: 14px 16px; border-bottom: 1px solid #22303F; display: flex; justify-content: space-between; align-items: center">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">AI сэрэмжлүүлгийн урсгал</h2>
+<span style="font-size: 12px; color: #93A3B5">бүх бүс</span>
+</div>
+<sc-for list="{{feed}}" as="f" hint-placeholder-count="7">
+<div style="display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #1B2633">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #93A3B5; flex-shrink: 0; width: 44px">{{f.t}}</span>
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+<span style="{{f.tagStyle}}">{{f.tag}}</span>
+<span style="font-size: 13px">{{f.text}}</span>
+<span style="font-size: 12px; color: #93A3B5">{{f.where}}</span>
+</div>
+</div>
+</sc-for>
+</section>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<section aria-label="Хүн цугларалтын явц" style="flex: 3 1 620px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Хүн цугларалтын явц · өнөөдөр</h2>
+<span style="font-size: 12px; color: #93A3B5">Төв цэнгэлдэх (цэнхэр) ба Сүхбаатарын талбай (ногоон-цэнхэр) · 30 минут тутам</span>
+</div>
+<div style="display: flex; align-items: flex-end; gap: 3px; height: 170px; border-bottom: 1px solid #22303F">
+<sc-for list="{{flow}}" as="b" hint-placeholder-count="24">
+<div style="flex: 1 1 0; min-width: 0; height: 100%; display: flex; align-items: flex-end; gap: 1px"><div style="{{b.a}}"></div><div style="{{b.b}}"></div></div>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; font-size: 11px; color: #93A3B5; font-family: 'IBM Plex Mono', monospace"><span>06:00</span><span>09:00</span><span>12:00</span><span>15:00</span><span>18:00</span></div>
+</section>
+<section aria-label="Замын нөхцөл" style="flex: 2 1 380px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Ойролцоох замын нөхцөл</h2>
+<sc-for list="{{roads}}" as="r" hint-placeholder-count="5">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #1B2633; font-size: 13px">
+<span>{{r.name}}</span>
+<span style="{{r.style}}">{{r.state}}</span>
+</div>
+</sc-for>
+</section>
+</div>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var LV = {
+      ok: { t: 'Хэвийн', bg: '#12263A', fg: '#8CC2FF', bar: '#4EA1FF' },
+      warn: { t: 'Анхааруулга', bg: '#2E2410', fg: '#E3B341', bar: '#D29922' },
+      high: { t: 'Өндөр нягтрал', bg: '#3A1A12', fg: '#FFA28B', bar: '#F0883E' }
+    };
+    var Z = [
+      ['Төв цэнгэлдэх хүрээлэн', 'Нээлтийн ёслол · 11:00', '12,480', 83, '2.9 хүн/м²', '38/38', 4, 'warn'],
+      ['Сүхбаатарын талбай', 'Төрийн ёслол, жагсаал', '8,920', 71, '2.1 хүн/м²', '32/34', 2, 'ok'],
+      ['Их дэлгүүр – Энхтайвны уулзвар', 'Явган зорчигчийн урсгал', '3,140', 92, '3.6 хүн/м²', '18/18', 6, 'high'],
+      ['Хүй долоон худаг', 'Морин уралдаан', '21,300', 54, '1.4 хүн/м²', '40/42', 1, 'ok']
+    ];
+    var zones = Z.map(function (z) {
+      var l = LV[z[7]];
+      return {
+        name: z[0], sub: z[1], count: z[2], pct: z[3] + '%', dens: z[4], cams: z[5], alerts: z[6], level: l.t,
+        badge: { fontSize: '12px', padding: '4px 8px', borderRadius: '6px', background: l.bg, color: l.fg, whiteSpace: 'nowrap' },
+        bar: { width: z[3] + '%', height: '100%', background: l.bar }
+      };
+    });
+    var tiles = [
+      { id: 'CAM-SB-0011', name: 'Талбай · баруун', ppl: '2,310' },
+      { id: 'CAM-SB-0012', name: 'Талбай · зүүн', ppl: '2,045' },
+      { id: 'CAM-SB-0014', name: 'Төрийн ордон урд', ppl: '1,620' },
+      { id: 'CAM-SB-0019', name: 'Соёлын төв өргөө', ppl: '980' },
+      { id: 'CAM-SB-0021', name: 'Бага тойруу', ppl: '1,140' },
+      { id: 'CAM-SB-0077', name: 'Төв шуудан', ppl: '825' }
+    ];
+    var TG = {
+      crowd: ['Хүн цугларалт', '#F0883E'],
+      flow: ['Эсрэг урсгал', '#D29922'],
+      obj: ['Орхигдсон эд зүйл', '#FF7B72'],
+      cam: ['Камерын төлөв', '#8CC2FF']
+    };
+    var feed = [
+      ['10:46', 'crowd', 'Нягтрал 3.5 хүн/м²-ээс давсан', 'Их дэлгүүр – Энхтайвны уулзвар · CAM-SB-0142'],
+      ['10:41', 'obj', 'Орхигдсон цүнх илэрсэн (> 5 мин)', 'Төв цэнгэлдэх · өмнөд хаалга'],
+      ['10:37', 'crowd', 'Хаалган дээр дараалал 180 м', 'Төв цэнгэлдэх · хойд хаалга'],
+      ['10:30', 'flow', 'Хаалттай зурвас руу тээврийн хэрэгсэл', 'Чингисийн өргөн чөлөө'],
+      ['10:22', 'cam', 'Камер дахин холбогдсон', 'CAM-SB-0016 · Талбай'],
+      ['10:15', 'crowd', 'Урсгал 2,000 хүн/цаг давсан', 'Сүхбаатарын талбай · баруун'],
+      ['10:02', 'flow', 'Явган хүн замын хэсэгт', 'Нарны зам – Цэнгэлдэх']
+    ].map(function (f) {
+      var t = TG[f[1]];
+      return { t: f[0], tag: t[0], text: f[2], where: f[3], tagStyle: { fontSize: '11px', fontWeight: 600, color: t[1], letterSpacing: '0.03em' } };
+    });
+    var A = [0.5, 0.8, 1.2, 1.9, 2.8, 4, 5.6, 7.2, 8.6, 9.4, 9.8, 9.6, 9.1, 8.4, 8, 7.6, 7.9, 8.3, 8.1, 7, 5.8, 4.4, 3, 2];
+    var B = [0.6, 0.9, 1.4, 2.4, 3.6, 5.2, 6.8, 7.4, 7.1, 6.2, 5.6, 5.2, 5, 5.3, 5.8, 6.2, 6.6, 7.1, 7.7, 7.9, 7.2, 6, 4.4, 3.1];
+    var flow = A.map(function (a, i) {
+      return {
+        a: { flex: '1 1 0', height: (a * 10) + '%', background: '#4EA1FF', borderRadius: '2px 2px 0 0' },
+        b: { flex: '1 1 0', height: (B[i] * 10) + '%', background: '#2DD4BF', borderRadius: '2px 2px 0 0' }
+      };
+    });
+    var RS = {
+      closed: ['Хаалттай', '#B1BAC4', '#222A33'],
+      jam: ['Түгжрэлтэй', '#FFA28B', '#3A1A12'],
+      slow: ['Удаашралтай', '#E3B341', '#2E2410'],
+      free: ['Чөлөөтэй', '#8CC2FF', '#12263A']
+    };
+    var roads = [
+      ['Энхтайвны өргөн чөлөө (Их дэлгүүр – Сансар)', 'closed'],
+      ['Чингисийн өргөн чөлөө – Цэнгэлдэх', 'jam'],
+      ['Нарны зам – 13-р хороолол', 'slow'],
+      ['Бага тойруу', 'slow'],
+      ['Их тойруу – хойд хэсэг', 'free']
+    ].map(function (r) {
+      var s = RS[r[1]];
+      return { name: r[0], state: s[0], style: { fontSize: '12px', padding: '4px 8px', borderRadius: '6px', color: s[1], background: s[2], whiteSpace: 'nowrap' } };
+    });
+    return { zones: zones, tiles: tiles, feed: feed, flow: flow, roads: roads };
+  }
+}
+</script>
+</body>
+</html>

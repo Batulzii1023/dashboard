@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<title>Камерын төлөв</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#0B1117}
+a{color:#4EA1FF}a:hover{color:#8CC2FF}
+select,input,button{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #0B1117; color: #E6EDF3; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px">
+
+<header style="border-bottom: 1px solid #22303F; background: #0E151D">
+<div style="max-width: 1440px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4EA1FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><circle cx="17.5" cy="17.5" r="3.5"></circle></svg>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-size: 17px; font-weight: 600">Мэдээллийн нэгдсэн цонх</div>
+<div style="font-size: 12px; color: #93A3B5">Замын хөдөлгөөний удирдлагын төв · AI аналитик + VMS</div>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<span style="font-size: 12px; padding: 4px 8px; border: 1px dashed #D29922; color: #E3B341; border-radius: 6px">Жишээ өгөгдөл</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px">2026.10.28 14:32</span>
+<button type="button" style="display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; background: #17212C; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3; cursor: pointer"><span style="width: 24px; height: 24px; border-radius: 50%; background: #1F3A5C; color: #8CC2FF; font-size: 11px; display: flex; align-items: center; justify-content: center">ЗХ</span>ЗХУТ · Ахлах оператор</button>
+</div>
+</div>
+<nav aria-label="Үндсэн цэс" style="max-width: 1440px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; gap: 4px">
+<a href="Main.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Нэгдсэн тойм</a>
+<a href="Cameras.dc.html" style="padding: 12px 14px; color: #E6EDF3; text-decoration: none; border-bottom: 2px solid #4EA1FF; font-weight: 500">Камерын төлөв</a>
+<a href="Event.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Арга хэмжээний горим</a>
+<a href="Reports.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Архив ба тайлан</a>
+<a href="Access.dc.html" style="padding: 12px 14px; color: #93A3B5; text-decoration: none; border-bottom: 2px solid transparent">Эрх ба тохиргоо</a>
+</nav>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 20px 24px 40px; display: flex; flex-direction: column; gap: 16px">
+
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 600">Камерын төлөв ба ажиллагаа</h1>
+<span style="font-size: 13px; color: #93A3B5">VMS-ээс 30 секунд тутам шинэчлэгдэнэ · нутаг дэвсгэр, хугацаа, төрөл, байршлаар шүүнэ</span>
+</div>
+<div style="display: flex; gap: 8px">
+<button type="button" style="min-height: 40px; padding: 0 14px; background: #17212C; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3; cursor: pointer">Газрын зураг дээр харах</button>
+<button type="button" style="min-height: 40px; padding: 0 14px; background: #17212C; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3; cursor: pointer">Экспорт</button>
+</div>
+</div>
+
+<section aria-label="Шүүлтүүр" style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; padding: 14px 16px; background: #121A23; border: 1px solid #22303F; border-radius: 10px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-dist" style="font-size: 12px; color: #93A3B5">Нутаг дэвсгэр</label>
+<select id="c-dist" style="min-width: 160px; min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"><option>Бүх дүүрэг</option><option>Сүхбаатар</option><option>Баянзүрх</option><option>Хан-Уул</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-khoroo" style="font-size: 12px; color: #93A3B5">Хороо</label>
+<select id="c-khoroo" style="min-width: 120px; min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"><option>Бүгд</option><option>1-р хороо</option><option>8-р хороо</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-type" style="font-size: 12px; color: #93A3B5">Төрөл</label>
+<select id="c-type" style="min-width: 150px; min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"><option>Бүх төрөл</option><option>PTZ</option><option>Тогтмол</option><option>ANPR</option><option>Урсгал тоолох</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-range" style="font-size: 12px; color: #93A3B5">Хугацааны интервал</label>
+<select id="c-range" style="min-width: 160px; min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3"><option>Сүүлийн 7 хоног</option><option>Өнөөдөр</option><option>Сүүлийн 30 хоног</option><option>Дурын…</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; flex: 1 1 220px">
+<label for="c-loc" style="font-size: 12px; color: #93A3B5">Байршил / ID / IP</label>
+<input id="c-loc" type="search" placeholder="ж: Энхтайвны өргөн чөлөө" style="min-height: 38px; padding: 0 10px; background: #0B1117; border: 1px solid #22303F; border-radius: 8px; color: #E6EDF3">
+</div>
+</section>
+
+<div role="tablist" aria-label="Төлөв" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+<button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}"><span style="{{t.dot}}"></span><span>{{t.label}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 600">{{t.n}}</span></button>
+</sc-for>
+</div>
+
+<section aria-label="Камерын жагсаалт" style="background: #121A23; border: 1px solid #22303F; border-radius: 10px; overflow: hidden">
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1100px">
+<thead>
+<tr style="background: #0E151D; color: #93A3B5; font-size: 12px; text-align: left">
+<th style="padding: 10px 12px; font-weight: 500">Төлөв</th>
+<th style="padding: 10px 12px; font-weight: 500">Камерын ID</th>
+<th style="padding: 10px 12px; font-weight: 500">Байршил</th>
+<th style="padding: 10px 12px; font-weight: 500">Дүүрэг</th>
+<th style="padding: 10px 12px; font-weight: 500">Төрөл</th>
+<th style="padding: 10px 12px; font-weight: 500">AI модуль</th>
+<th style="padding: 10px 12px; font-weight: 500">Сүүлд холбогдсон</th>
+<th style="padding: 10px 12px; font-weight: 500; text-align: right">Ажиллаагүй</th>
+<th style="padding: 10px 12px; font-weight: 500">7 хоногийн ажиллагаа</th>
+<th style="padding: 10px 12px; font-weight: 500; text-align: right">Uptime</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="10">
+<tr style="border-top: 1px solid #1B2633">
+<td style="padding: 10px 12px"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="{{r.dot}}"></span><span style="{{r.stColor}}">{{r.stLabel}}</span></span></td>
+<td style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace">{{r.id}}</td>
+<td style="padding: 10px 12px">{{r.loc}}</td>
+<td style="padding: 10px 12px; color: #B8C4D2">{{r.dist}}</td>
+<td style="padding: 10px 12px; color: #B8C4D2">{{r.type}}</td>
+<td style="padding: 10px 12px; color: #B8C4D2">{{r.ai}}</td>
+<td style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace; color: #B8C4D2">{{r.last}}</td>
+<td style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace; text-align: right">{{r.down}}</td>
+<td style="padding: 10px 12px"><div style="display: flex; gap: 2px; width: 168px"><sc-for list="{{r.strip}}" as="s" hint-placeholder-count="28"><span style="{{s}}"></span></sc-for></div></td>
+<td style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace; text-align: right">{{r.up}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid #22303F; font-size: 12px; color: #93A3B5">
+<span>{{shown}} мөр харуулж байна · нийт 1,248</span>
+<div style="display: flex; gap: 14px; align-items: center"><span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; background: #3FB950; border-radius: 2px"></span>ажилласан</span><span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; background: #F85149; border-radius: 2px"></span>тасалдсан</span><span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; background: #3A4552; border-radius: 2px"></span>ашиглалтгүй</span><span>· 6 цагийн нүд</span></div>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<section aria-label="Дүүргээр ажиллаагүй хугацаа" style="flex: 1 1 520px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Нийт ажиллаагүй хугацаа · дүүргээр</h2>
+<span style="font-size: 12px; color: #93A3B5">Сүүлийн 7 хоног · камер-цаг</span>
+</div>
+<sc-for list="{{down}}" as="d" hint-placeholder-count="7">
+<div style="display: grid; grid-template-columns: 140px minmax(0, 1fr) 80px; gap: 10px; align-items: center; font-size: 13px">
+<span>{{d.name}}</span>
+<div style="height: 10px; background: #0B1117; border-radius: 3px; overflow: hidden"><div style="{{d.bar}}"></div></div>
+<span style="text-align: right; font-family: 'IBM Plex Mono', monospace">{{d.v}} ц</span>
+</div>
+</sc-for>
+</section>
+<section aria-label="Саатлын шалтгаан" style="flex: 1 1 420px; min-width: 0; background: #121A23; border: 1px solid #22303F; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Саатлын шалтгаан</h2>
+<span style="font-size: 12px; color: #93A3B5">52 идэвхтэй гэмтэл · VMS алдааны кодоор ангилсан</span>
+</div>
+<sc-for list="{{causes}}" as="c" hint-placeholder-count="5">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1B2633; font-size: 13px">
+<span>{{c.label}}</span>
+<span style="display: flex; gap: 16px; font-family: 'IBM Plex Mono', monospace"><span>{{c.n}}</span><span style="color: #93A3B5; width: 90px; text-align: right">дунд {{c.avg}}</span></span>
+</div>
+</sc-for>
+</section>
+</div>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1640}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'all' };
+  }
+  renderVals() {
+    var self = this;
+    var tab = (this.state && this.state.tab) || 'all';
+    var C = { ok: '#3FB950', fault: '#F85149', decom: '#7D8590' };
+    var TX = { ok: '#56D364', fault: '#FF7B72', decom: '#B1BAC4' };
+    var L = { ok: 'Хэвийн', fault: 'Гэмтэлтэй', decom: 'Хасах' };
+    var TB = [['all', 'Бүгд', '1,248', '#4EA1FF'], ['ok', 'Хэвийн', '1,163', C.ok], ['fault', 'Гэмтэлтэй', '52', C.fault], ['decom', 'Ашиглалтаас хасах', '33', C.decom]];
+    var tabs = TB.map(function (t) {
+      var on = t[0] === tab;
+      return {
+        label: t[1], n: t[2], on: on,
+        pick: function () { self.setState({ tab: t[0] }); },
+        style: { display: 'flex', alignItems: 'center', gap: '8px', minHeight: '44px', padding: '0 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', color: '#E6EDF3', background: on ? '#17212C' : 'transparent', border: '1px solid ' + (on ? t[3] : '#22303F') },
+        dot: { width: '10px', height: '10px', borderRadius: t[0] === 'decom' ? '2px' : '50%', background: t[3] }
+      };
+    });
+    var R = [
+      ['fault', 'CAM-SB-0142', 'Энхтайвны өргөн чөлөө – Их дэлгүүр', 'Сүхбаатар', 'PTZ', 'Хурд, урсгал', '10.27 22:14', '16ц 18м', '91.2%', 3],
+      ['fault', 'CAM-BZ-0388', 'Нарны зам – 13-р хороолол', 'Баянзүрх', 'ANPR', 'Дугаар таних', '10.26 10:31', '2х 04ц', '70.1%', 9],
+      ['ok', 'CAM-SB-0011', 'Сүхбаатарын талбай – баруун', 'Сүхбаатар', 'PTZ', 'Хүн тоолох', '14:32:05', '—', '99.9%', 0],
+      ['ok', 'CAM-HU-0201', 'Төв цэнгэлдэх – хойд хаалга', 'Хан-Уул', 'Урсгал тоолох', 'Хүн тоолох', '14:32:04', '—', '99.6%', 0],
+      ['fault', 'CAM-SKH-0217', 'Баруун 4 зам', 'Сонгинохайрхан', 'Тогтмол', 'Улаан гэрэл', '10.28 06:40', '7ц 52м', '95.3%', 2],
+      ['ok', 'CAM-BG-0104', 'Энхтайвны өргөн чөлөө – 3, 4-р хороолол', 'Баянгол', 'ANPR', 'Хурд', '14:32:01', '—', '98.8%', 1],
+      ['decom', 'CAM-CHT-0009', 'Сөүлийн гудамж – Хуучин', 'Чингэлтэй', 'Тогтмол', '—', '09.14 08:02', 'хасагдсан', '—', -1],
+      ['fault', 'CAM-HU-0093', 'Чингисийн өргөн чөлөө – Яармаг', 'Хан-Уул', 'ANPR', 'Дугаар таних', '10.28 11:27', '3ц 05м', '98.2%', 1],
+      ['ok', 'CAM-BZ-0045', 'Их тойруу – 15-р хороолол', 'Баянзүрх', 'Тогтмол', 'Буруу зогсоол', '14:32:03', '—', '99.4%', 0],
+      ['decom', 'CAM-SKH-0031', 'Толгойт – 1-р хороо', 'Сонгинохайрхан', 'PTZ', '—', '08.30 17:45', 'хасагдсан', '—', -1],
+      ['ok', 'CAM-SB-0077', 'Бага тойруу – Төв шуудан', 'Сүхбаатар', 'PTZ', 'Хүн тоолох', '14:32:05', '—', '99.8%', 0],
+      ['fault', 'CAM-BG-0156', '3, 4-р хороолол', 'Баянгол', 'Тогтмол', 'Буруу зогсоол', '10.27 12:20', '1х 02ц', '84.6%', 5]
+    ];
+    var rows = R.filter(function (r) { return tab === 'all' || r[0] === tab; }).map(function (r, idx) {
+      var strip = [];
+      for (var i = 0; i < 28; i++) {
+        var col = '#3FB950';
+        if (r[9] < 0) col = '#3A4552';
+        else if (r[9] > 0 && i >= 28 - r[9]) col = '#F85149';
+        else if (r[9] > 0 && (i * 7 + idx) % 13 === 0) col = '#F85149';
+        strip.push({ flex: '1 1 0', height: '14px', borderRadius: '2px', background: col });
+      }
+      return {
+        dot: { width: '10px', height: '10px', borderRadius: r[0] === 'decom' ? '2px' : '50%', background: C[r[0]] },
+        stColor: { color: TX[r[0]] }, stLabel: L[r[0]],
+        id: r[1], loc: r[2], dist: r[3], type: r[4], ai: r[5], last: r[6], down: r[7], up: r[8], strip: strip
+      };
+    });
+    var DN = [['Баянзүрх', 412], ['Сонгинохайрхан', 356], ['Сүхбаатар', 298], ['Баянгол', 274], ['Хан-Уул', 231], ['Чингэлтэй', 205], ['Налайх', 48]];
+    var down = DN.map(function (d) { return { name: d[0], v: d[1], bar: { width: (d[1] / 412 * 100) + '%', height: '100%', background: '#F85149', opacity: 0.85 } }; });
+    var causes = [
+      { label: 'Сүлжээ / холболт тасарсан', n: 21, avg: '6ц 10м' },
+      { label: 'Цахилгаан тэжээл', n: 12, avg: '14ц 30м' },
+      { label: 'Дүрс алдагдсан / линз', n: 9, avg: '1х 03ц' },
+      { label: 'Бичлэг зогссон (NVR/диск)', n: 6, avg: '4ц 45м' },
+      { label: 'AI аналитик сервер холболт', n: 4, avg: '2ц 20м' }
+    ];
+    return { tabs: tabs, rows: rows, shown: rows.length, down: down, causes: causes };
+  }
+}
+</script>
+</body>
+</html>

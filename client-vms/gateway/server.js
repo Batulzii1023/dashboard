@@ -78,12 +78,16 @@ async function cluster(force) {
         return { source: publicView(s), ok: false, error: e.message, servers: [], channels: [], errors: [e.message] };
       }
     }));
-    // Нэг BLAZE системийн хоёр серверийг хоёуланг нь нэмбэл serverId/channelId-аар давхардлыг арилгана
-    const servers = new Map(); const channels = new Map();
+    // Нэг BLAZE кластерын хоёр серверийг хоёуланг нь нэмбэл systemId/serverId/channelId-аар давхардлыг арилгана
+    const servers = new Map(); const channels = new Map(); const systems = new Map();
     for (const r of results) {
+      if (r.system && r.system.id) {
+        if (systems.has(r.system.id)) { r.duplicateOf = systems.get(r.system.id).sourceName; continue; }
+        systems.set(r.system.id, { ...r.system, sourceId: r.source.id, sourceName: r.source.name });
+      }
       for (const sv of r.servers) {
         const key = sv.id || r.source.id + ':' + sv.name;
-        if (!servers.has(key)) servers.set(key, { ...sv, raw: undefined, sourceId: r.source.id, sourceName: r.source.name });
+        if (!servers.has(key)) servers.set(key, { ...sv, sourceId: r.source.id, sourceName: r.source.name, systemName: r.system && r.system.name });
       }
       for (const ch of r.channels) {
         const key = ch.id || r.source.id + ':' + ch.name;
@@ -96,7 +100,8 @@ async function cluster(force) {
     const data = {
       generatedAt: new Date().toISOString(),
       mock: MOCK,
-      sources: results.map((r) => ({ ...r.source, ok: r.ok, error: r.error || null, errors: r.errors, latencyMs: r.latencyMs || null, serverCount: r.servers.length, channelCount: r.channels.length })),
+      sources: results.map((r) => ({ ...r.source, ok: r.ok, error: r.error || null, errors: r.errors, latencyMs: r.latencyMs || null, serverCount: r.servers.length, channelCount: r.channels.length, systemName: r.system && r.system.name, isClustered: r.system && r.system.isClustered, duplicateOf: r.duplicateOf || null })),
+      systems: [...systems.values()],
       servers: [...servers.values()],
       channels: ch,
       totals: { sources: store.length, servers: servers.size, channels: ch.length, ok: count('ok'), fault: count('fault'), decom: count('decom'), unknown: count('unknown') }
@@ -140,7 +145,7 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/servers' && req.method === 'POST') {
       const b = await readBody(req);
       if (!b.host || !b.userName || !b.password) return send(res, 400, { error: 'IP/хост, хэрэглэгч, нууц үг шаардлагатай' });
-      const s = { id: crypto.randomUUID(), name: (b.name || b.host).slice(0, 80), host: String(b.host).trim(), port: Number(b.port) || 8000, userName: b.userName, pw: enc(b.password) };
+      const s = { id: crypto.randomUUID(), name: (b.name || b.host).slice(0, 80), host: String(b.host).trim(), port: Number(b.port) || 8000, protocol: b.protocol === 'http' ? 'http' : 'https', userName: b.userName, pw: enc(b.password) };
       const c = MOCK ? new MockClient({ ...s, password: b.password }) : new BlazeClient({ ...s, password: b.password });
       try { await c.login(); } catch (e) { return send(res, 422, { error: e.message }); }
       clients.set(s.id, c);
@@ -159,8 +164,19 @@ const server = http.createServer(async (req, res) => {
 
     if (p === '/api/cluster' && req.method === 'GET') return send(res, 200, await cluster(url.searchParams.get('refresh') === '1'));
 
+    const th = /^\/api\/thumb\/([\w-]+)\/([\w-]+)$/.exec(p);
+    if (th && req.method === 'GET') {
+      const s = store.find((x) => x.id === th[1]);
+      if (!s) return send(res, 404, { error: 'олдсонгүй' });
+      const img = await clientFor(s).thumbnail(th[2]);
+      res.writeHead(200, { 'Content-Type': img.type, 'Cache-Control': 'no-store' });
+      return res.end(img.buf);
+    }
+
     if (p === '/api/events' && req.method === 'GET') {
-      const all = await Promise.all(store.map(async (s) => {
+      const cl = await cluster(false);
+      const dup = new Set(cl.sources.filter((x) => x.duplicateOf).map((x) => x.id));
+      const all = await Promise.all(store.filter((s) => !dup.has(s.id)).map(async (s) => {
         try { return (await clientFor(s).events(30)).map((e) => ({ ...e, source: s.name })); } catch (_) { return []; }
       }));
       return send(res, 200, all.flat().sort((a, b) => String(b.time).localeCompare(String(a.time))).slice(0, 100));

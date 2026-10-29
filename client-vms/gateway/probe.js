@@ -1,10 +1,10 @@
 // BLAZE API-г жинхэнэ сервер дээр шалгах хэрэгсэл.
 // Ажиллуулах:  node probe.js <IP> <хэрэглэгч> [порт=8000]
-// Нууц үгийг асууна (дэлгэцэнд харагдахгүй). Үр дүнг probe-result.json-д хадгална (токен, нууц үг орохгүй).
+// Нууц үгийг асууна. Үр дүнг probe-result.json-д хадгална (токен, нууц үг орохгүй).
 'use strict';
 const fs = require('fs');
 const readline = require('readline');
-const { request, asList } = require('./blaze');
+const { request } = require('./blaze');
 const EP = require('./endpoints');
 
 const [host, userName, port = '8000'] = process.argv.slice(2);
@@ -17,52 +17,48 @@ function askHidden(q) {
     rl.question(q, (a) => { rl.close(); process.stdout.write('\n'); resolve(a); });
   });
 }
-
-const redact = (v) => JSON.parse(JSON.stringify(v, (k, x) => (/token|password|secret/i.test(k) ? '[хассан]' : x)));
-const shape = (j) => {
-  if (Array.isArray(j)) return { type: 'array', length: j.length, sample: j.slice(0, 2) };
-  if (j && typeof j === 'object') {
-    const o = { type: 'object', keys: Object.keys(j) };
-    for (const k of Object.keys(j)) if (Array.isArray(j[k])) o[k] = { length: j[k].length, sample: j[k].slice(0, 2) };
-    if (!Object.values(o).some((v) => v && v.sample)) o.sample = j;
-    return o;
-  }
-  return j;
-};
+const redact = (v) => JSON.parse(JSON.stringify(v, (k, x) => (/token|password|secret|serialNumber|macAddress|machineId/i.test(k) ? '[хассан]' : x)));
 
 (async () => {
   const password = await askHidden('Нууц үг: ');
   const base = 'https://' + host + ':' + port;
-  const result = { base, at: new Date().toISOString(), checks: [] };
+  const out = { base, at: new Date().toISOString(), checks: [] };
+  const log = (m, p, st, extra) => { console.log(m.padEnd(5), p, '→', st, extra || ''); out.checks.push({ method: m, path: p, status: st, extra }); };
 
   const lr = await request(base, 'POST', EP.login.path, { body: { userName, userPassword: password, passwordEncrypted: 'plain' } });
-  result.login = { status: lr.status, keys: lr.json ? Object.keys(lr.json) : null, body: lr.json && lr.status !== 200 ? lr.json : undefined };
-  console.log('POST', EP.login.path, '→', lr.status);
-  if (lr.status !== 200 || !lr.json || !lr.json.accessToken) { fs.writeFileSync('probe-result.json', JSON.stringify(redact(result), null, 2)); console.log('Нэвтэрч чадсангүй. probe-result.json-г илгээнэ үү.'); return; }
+  log('POST', EP.login.path, lr.status, lr.json ? Object.keys(lr.json).join(',') : lr.text.slice(0, 200));
+  if (lr.status !== 200 || !lr.json || !lr.json.accessToken) { fs.writeFileSync('probe-result.json', JSON.stringify(redact(out), null, 2)); return console.log('Нэвтэрч чадсангүй.'); }
   const token = lr.json.accessToken;
+  const get = (p, o) => request(base, 'GET', p, Object.assign({ token }, o));
 
-  const paths = [EP.servers.path, EP.channels.path, EP.layouts.path, EP.events.path + '?limit=5', ...EP.probeExtra];
-  for (const p of paths) {
-    try {
-      const r = await request(base, 'GET', p, { token });
-      result.checks.push({ path: p, status: r.status, shape: shape(r.json) || r.text.slice(0, 300) });
-      console.log('GET', p, '→', r.status);
-      if (p === EP.servers.path && r.status === 200) {
-        for (const s of asList(r.json, 'servers').slice(0, 3)) {
-          const id = s.serverId || s.id;
-          if (!id) continue;
-          const sp = EP.storages.path.replace('{serverId}', id);
-          const sr = await request(base, 'GET', sp, { token });
-          result.checks.push({ path: sp, status: sr.status, shape: shape(sr.json) });
-          console.log('GET', sp, '→', sr.status);
-        }
-      }
-    } catch (e) {
-      result.checks.push({ path: p, error: e.message });
-      console.log('GET', p, '→', e.message);
-    }
+  const b = await get(EP.batch.path);
+  const bj = b.json || {};
+  log('GET', EP.batch.path, b.status, Object.keys(bj).map((k) => k + (Array.isArray(bj[k]) ? '[' + bj[k].length + ']' : '')).join(' '));
+  out.sample = { system: bj.system, server: (bj.servers || [])[0], device: (bj.devices || [])[0], channel: (bj.channels || [])[0] };
+  const statusCount = (arr, k) => (arr || []).reduce((m, x) => (m[x[k]] = (m[x[k]] || 0) + 1, m), {});
+  out.counts = { serverStatus: statusCount(bj.servers, 'status'), serverState: statusCount(bj.servers, 'state'), channelStatus: statusCount(bj.channels, 'status'), deviceStatus: statusCount(bj.devices, 'status') };
+  console.log('      ', JSON.stringify(out.counts));
+
+  const ch = (bj.channels || []).slice(0, 3).map((c) => c.channelId);
+  if (ch.length) {
+    const r = await get(EP.recordingStatus.path + '?channelId=' + encodeURIComponent(ch.join(',')));
+    log('GET', EP.recordingStatus.path, r.status, JSON.stringify(r.json).slice(0, 200));
+    const t = await get(EP.thumbnail.path.replace('{id}', ch[0]) + '?quality=low&fixHeightSize=270', { binary: true });
+    log('GET', EP.thumbnail.path, t.status, t.buf ? t.type + ' ' + t.buf.length + ' байт' : (t.text || '').slice(0, 200));
   }
-  await request(base, 'DELETE', EP.logout.path, { token }).catch(() => {});
-  fs.writeFileSync('probe-result.json', JSON.stringify(redact(result), null, 2));
-  console.log('\nprobe-result.json хадгаллаа. Энэ файлыг илгээнэ үү (токен, нууц үгийг хассан).');
+  for (const s of (bj.servers || []).slice(0, 3)) {
+    const st = await get(EP.storages.path.replace('{id}', s.serverId));
+    log('GET', EP.storages.path.replace('{id}', s.serverName), st.status, JSON.stringify(st.json).slice(0, 300));
+    const us = await get(EP.usage.path.replace('{id}', s.serverId));
+    log('GET', EP.usage.path.replace('{id}', s.serverName), us.status, JSON.stringify(us.json).slice(0, 200));
+  }
+  const ev = await get(EP.events.path + '?limit=3&sort=timestamp:desc');
+  log('GET', EP.events.path, ev.status, JSON.stringify(ev.json).slice(0, 300));
+
+  const rf = await request(base, 'POST', EP.refresh.path, { token: lr.json.refreshToken });
+  log('POST', EP.refresh.path + ' (Bearer refreshToken)', rf.status);
+  await request(base, 'POST', EP.logout.path, { token, body: { refreshToken: (rf.json && rf.json.refreshToken) || lr.json.refreshToken } }).catch(() => {});
+
+  fs.writeFileSync('probe-result.json', JSON.stringify(redact(out), null, 2));
+  console.log('\nprobe-result.json хадгаллаа (токен, нууц үг, серийн дугаарыг хассан).');
 })().catch((e) => { console.error(e.message); process.exit(1); });

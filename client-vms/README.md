@@ -24,21 +24,29 @@ GATEWAY_SECRET='урт-нууц-хэллэг' node server.js        # http://127
 | `BLAZE_MOCK=1` | Сервергүйгээр жишээ өгөгдлөөр турших |
 | `CACHE_MS` | Кластерын кэшийн хугацаа, анхдагч 15000 |
 
-## API баталгаажуулалт
+## Ашигладаг BLAZE API (Blaze API Document v1, swagger 26.05.19)
 
-`gateway/endpoints.js` доторх замууд хоёр төрөлтэй:
-- **Баталгаатай** ("BLAZE API Document Guide" болон "API Changes 260519" баримтаас): `POST /api/v1/auth/tokens`, `…/tokens:re-issue`, `DELETE /api/v1/auth/tokens`, `GET /api/v1/servers/{serverId}/storages`, `GET /api/v1/event/logs`, `GET /api/v1/layouts`
-- **Таамаг** (`swagger_yaml.txt` ирээгүй): `GET /api/v1/servers`, `GET /api/v1/channels`
+| Зорилго | Endpoint |
+|---|---|
+| Нэвтрэх | `POST /api/v1/auth/tokens` — `{userName, userPassword, passwordEncrypted:"plain"}` |
+| Токен шинэчлэх | `POST /api/v1/auth/tokens:re-issue` (Bearer = refresh token, амжилтгүй бол дахин нэвтэрнэ) |
+| Гарах | `POST /api/v1/auth/tokens:delete-token` — `{refreshToken}` |
+| Систем, сервер, төхөөрөмж, суваг | `GET /api/v1:batch` (нэг хүсэлтээр) |
+| Бичлэгийн бодит төлөв | `GET /api/v1/channels/recording-status?channelId=a,b,c` |
+| Диск (ГБ, SMART төлөв) | `GET /api/v1/servers/{id}/storages` |
+| CPU / RAM | `GET /api/v1/servers/{id}/health-monitoring/usage` |
+| Үйл явдал | `GET /api/v1/event/logs?limit=30&sort=timestamp:desc` |
+| Камерын зураг | `GET /api/v1/channels/{id}/thumbnail?quality=low&fixHeightSize=270` |
+
+Төлвийн хөрвүүлэлт: суваг `Ok` нь ногоон, `NetworkError`/`Unauthorized` нь улаан, `Deleted` нь саарал. Сервер `status=Ok` ба `state≠FAIL` бол хэвийн. Нэг BLAZE кластерын хэд хэдэн серверийг тус тусад нь нэмбэл `systemId`-аар таньж давхар тоолохгүй.
 
 Жинхэнэ сервер дээр шалгах:
 
 ```bash
-node probe.js 10.10.20.11 admin        # нууц үгийг асууна
+node probe.js 10.10.20.11 admin        # нууц үгийг асууна → probe-result.json (токен, нууц үг, серийн дугаар хасагдсан)
 ```
-
-Ажиллуулсны дараа `probe-result.json` файл үүснэ. Файлд токен, нууц үг орохгүй. Энэ файлаар эсвэл `swagger_yaml.txt`-ээр замуудыг баталгаажуулна.
 
 ## Хийгээгүй (дараагийн шат)
 
-- **Шууд дүрс.** RTSP-г go2rtc эсвэл MediaMTX-ээр WebRTC болгох, эсвэл BLAZE-ийн layout/web client-ийг холбох.
+- **Шууд видео.** Одоогоор 3 секунд тутам шинэчлэгдэх thumbnail л харуулна. Бүрэн видеонд сувгийн `mediaProfileInfo[].rtspUrl`-ийг go2rtc эсвэл MediaMTX-ээр WebRTC болгоно.
 - **Хэрэглэгчийн эрхийн ялгаа.** Одоогоор gateway-д нэг админ эрх л байна.

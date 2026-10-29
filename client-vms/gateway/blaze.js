@@ -1,12 +1,12 @@
-// BLAZE серверийн client: токен авах, шинэчлэх, 401 үед дахин нэвтрэх, хариуг нэгтгэх хэлбэрт оруулах.
+// BLAZE серверийн client: токен авах/шинэчлэх, 401 үед дахин нэвтрэх, :batch-аас кластерын мэдээлэл гаргах.
 'use strict';
 const https = require('https');
 const http = require('http');
 const EP = require('./endpoints');
 
-const INSECURE = process.env.BLAZE_TLS_VERIFY !== '1'; // BLAZE өөрөө self-signed сертификаттай
+const INSECURE = process.env.BLAZE_TLS_VERIFY !== '1'; // BLAZE анхдагчаар self-signed сертификаттай
 
-function request(base, method, path, { token, body, timeout = 8000 } = {}) {
+function request(base, method, path, { token, body, timeout = 10000, binary = false } = {}) {
   return new Promise((resolve, reject) => {
     const url = new URL(path, base);
     const lib = url.protocol === 'http:' ? http : https;
@@ -16,7 +16,7 @@ function request(base, method, path, { token, body, timeout = 8000 } = {}) {
       rejectUnauthorized: !INSECURE,
       timeout,
       headers: Object.assign(
-        { Accept: 'application/json' },
+        { Accept: binary ? 'image/jpeg' : 'application/json' },
         data ? { 'Content-Type': 'application/json', 'Content-Length': data.length } : {},
         token ? { Authorization: 'Bearer ' + token } : {}
       )
@@ -24,9 +24,11 @@ function request(base, method, path, { token, body, timeout = 8000 } = {}) {
       const chunks = [];
       res.on('data', (c) => chunks.push(c));
       res.on('end', () => {
-        const text = Buffer.concat(chunks).toString('utf8');
+        const buf = Buffer.concat(chunks);
+        if (binary && res.statusCode === 200) return resolve({ status: 200, buf, type: res.headers['content-type'] || 'image/jpeg' });
+        const text = buf.toString('utf8');
         let json = null;
-        try { json = text ? JSON.parse(text) : null; } catch (_) { /* not json */ }
+        try { json = text ? JSON.parse(text) : null; } catch (_) { /* json биш */ }
         resolve({ status: res.statusCode, json, text });
       });
     });
@@ -37,146 +39,167 @@ function request(base, method, path, { token, body, timeout = 8000 } = {}) {
   });
 }
 
-function fill(path, params) {
-  return path.replace(/\{(\w+)\}/g, (_, k) => encodeURIComponent(params[k]));
-}
-
-function qs(obj) {
+const fill = (path, params) => path.replace(/\{(\w+)\}/g, (_, k) => encodeURIComponent(params[k]));
+const qs = (obj) => {
   const p = Object.entries(obj || {}).filter(([, v]) => v !== undefined && v !== '');
   return p.length ? '?' + p.map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v)).join('&') : '';
-}
+};
+const errMsg = (r) => (r.json && (r.json.message || r.json.errorMessage || r.json.error || r.json.code)) || (r.text || '').slice(0, 200);
 
-// Хариу массив эсвэл {items|servers|channels|data: []} хэлбэртэй байж болно
-function asList(json, ...keys) {
-  if (Array.isArray(json)) return json;
-  if (!json || typeof json !== 'object') return [];
-  for (const k of keys.concat(['items', 'data', 'list', 'results'])) {
-    if (Array.isArray(json[k])) return json[k];
-  }
-  return [];
-}
-
-const pick = (o, ...ks) => { for (const k of ks) if (o && o[k] !== undefined && o[k] !== null) return o[k]; };
-
-function statusOf(raw) {
-  const s = raw && typeof raw === 'object' ? pick(raw, 'status', 'state', 'connectionStatus', 'healthStatus') : raw;
-  if (raw && typeof raw === 'object') {
-    if (raw.isEnabled === false || raw.enabled === false) return 'decom';
-    if (s === undefined && typeof raw.isOnline === 'boolean') return raw.isOnline ? 'ok' : 'fault';
-  }
-  const v = String(s === undefined ? '' : s).toLowerCase();
-  if (!v) return 'unknown';
-  if (/disabled|removed|inactive|unused/.test(v)) return 'decom';
-  if (/disconnect|offline|error|fail|lost|unauthori|unreachable|not/.test(v)) return 'fault';
-  if (/^(online|connected|normal|ok|recording|running|active|good)$/.test(v)) return 'ok';
+// Сувгийн төлөв: Ok | NetworkError | Unauthorized | Deleted
+function channelStatus(c) {
+  if (c.deleted || c.status === 'Deleted') return 'decom';
+  if (c.status === 'Ok') return 'ok';
+  if (!c.status) return 'unknown';
   return 'fault';
 }
+// Сервер: status Ok|NetworkError, state NORMAL|FAIL|FAILOVER
+function serverStatus(s) {
+  if (s.settings && s.settings.enable === false) return 'decom';
+  if (s.status === 'Ok' && s.state !== 'FAIL') return 'ok';
+  if (!s.status) return 'unknown';
+  return 'fault';
+}
+const STATUS_TEXT = { Ok: 'Хэвийн', NetworkError: 'Сүлжээний алдаа', Unauthorized: 'Нэвтрэх эрхгүй', Deleted: 'Устгагдсан', Registering: 'Бүртгэж байна' };
 
 class BlazeClient {
   constructor(cfg) {
-    this.cfg = cfg; // { id, name, host, port, userName, password }
+    this.cfg = cfg; // { id, name, host, port, protocol, userName, password }
     this.base = (cfg.protocol || 'https') + '://' + cfg.host + ':' + (cfg.port || 8000);
     this.token = null; this.refreshToken = null; this.exp = 0; this.refreshExp = 0;
+  }
+
+  setTokens(j) {
+    const now = Date.now();
+    this.token = j.accessToken;
+    if (j.refreshToken) this.refreshToken = j.refreshToken;
+    this.exp = now + (j.accessTokenExpiryPeriod || j.expiresInAccessToken || 3600) * 1000;
+    this.refreshExp = now + (j.refreshTokenExpiryPeriod || j.expiresInRefreshToken || 0) * 1000;
+    this.isTemporary = !!j.isTemporary;
   }
 
   async login() {
     const r = await request(this.base, EP.login.method, EP.login.path, {
       body: { userName: this.cfg.userName, userPassword: this.cfg.password, passwordEncrypted: 'plain' }
     });
-    if (r.status !== 200 || !r.json || !r.json.accessToken) {
-      const msg = (r.json && (r.json.message || r.json.errorMessage || r.json.code)) || r.text.slice(0, 200);
-      throw new Error('Нэвтрэлт амжилтгүй (' + r.status + '): ' + msg);
-    }
+    if (r.status !== 200 || !r.json || !r.json.accessToken) throw new Error('Нэвтрэлт амжилтгүй (' + r.status + '): ' + errMsg(r));
     this.setTokens(r.json);
     return r.json;
-  }
-
-  setTokens(j) {
-    const now = Date.now();
-    this.token = j.accessToken;
-    this.refreshToken = j.refreshToken || this.refreshToken;
-    this.exp = now + ((j.expiresInAccessToken || 3600) * 1000);
-    this.refreshExp = now + ((j.expiresInRefreshToken || 0) * 1000);
-    this.isTemporary = !!j.isTemporary;
   }
 
   async ensureToken() {
     if (this.token && Date.now() < this.exp - 60000) return;
     if (this.refreshToken && Date.now() < this.refreshExp - 60000) {
       try {
-        const r = await request(this.base, EP.refresh.method, EP.refresh.path, {
-          token: this.refreshToken, body: EP.refresh.body(this.refreshToken)
-        });
+        const r = await request(this.base, EP.refresh.method, EP.refresh.path, { token: this.refreshToken });
         if (r.status === 200 && r.json && r.json.accessToken) { this.setTokens(r.json); return; }
-      } catch (_) { /* дахин нэвтэрнэ */ }
+      } catch (_) { /* доор дахин нэвтэрнэ */ }
     }
     await this.login();
   }
 
-  async get(path) {
+  async call(path, opts = {}) {
     await this.ensureToken();
-    let r = await request(this.base, 'GET', path, { token: this.token });
-    if (r.status === 401) { this.token = null; await this.login(); r = await request(this.base, 'GET', path, { token: this.token }); }
-    if (r.status >= 400) throw new Error('GET ' + path + ' → ' + r.status);
-    return r.json;
+    let r = await request(this.base, 'GET', path, { token: this.token, binary: opts.binary });
+    if (r.status === 401) {
+      this.token = null; await this.login();
+      r = await request(this.base, 'GET', path, { token: this.token, binary: opts.binary });
+    }
+    if (r.status >= 400) throw new Error('GET ' + path.split('?')[0] + ' → ' + r.status + ' ' + errMsg(r));
+    return r;
   }
+  async get(path) { return (await this.call(path)).json; }
 
   async logout() {
     if (!this.token) return;
-    try { await request(this.base, EP.logout.method, EP.logout.path, { token: this.token }); } catch (_) { }
-    this.token = null;
+    try { await request(this.base, EP.logout.method, EP.logout.path, { token: this.token, body: { refreshToken: this.refreshToken } }); } catch (_) { }
+    this.token = null; this.refreshToken = null;
   }
 
-  // Нэг BLAZE системээс нэгтгэсэн мэдээлэл
   async snapshot() {
-    const out = { servers: [], channels: [], errors: [] };
-    const safe = async (label, fn) => { try { return await fn(); } catch (e) { out.errors.push(label + ': ' + e.message); return null; } };
+    const out = { system: null, servers: [], channels: [], errors: [] };
+    const b = await this.get(EP.batch.path);
+    const sys = b.system || {};
+    out.system = { id: sys.systemId || '', name: sys.systemName || '', version: sys.version || '', isClustered: !!sys.isClustered, memberCount: sys.memberCount || 0, totalChannels: sys.totalChannels, usedChannels: sys.usedChannels };
 
-    const sj = await safe('servers', () => this.get(EP.servers.path));
-    out.servers = asList(sj, 'servers').map((s) => ({
-      id: String(pick(s, 'serverId', 'id', 'uuid') || ''),
-      name: pick(s, 'serverName', 'name', 'hostName') || 'Сервер',
-      address: pick(s, 'ipAddress', 'address', 'host', 'url') || this.cfg.host,
-      version: pick(s, 'version', 'serverVersion', 'softwareVersion') || '',
-      os: pick(s, 'osInfo', 'os', 'osName') || '',
-      status: statusOf(s),
-      raw: s
-    }));
-    if (!out.servers.length) out.servers.push({ id: 'host:' + this.cfg.host, name: this.cfg.name, address: this.cfg.host, status: out.errors.length ? 'fault' : 'ok', version: '', os: '' });
-
-    const cj = await safe('channels', () => this.get(EP.channels.path));
-    out.channels = asList(cj, 'channels', 'devices', 'cameras').map((c) => ({
-      id: String(pick(c, 'channelId', 'id', 'uuid') || ''),
-      name: pick(c, 'channelName', 'name', 'deviceName') || 'Суваг',
-      serverId: String(pick(c, 'serverId', 'parentId', 'recordingServerId') || out.servers[0].id),
-      model: pick(c, 'model', 'modelName', 'deviceModel') || '',
-      ip: pick(c, 'ipAddress', 'ip', 'host') || '',
-      recording: pick(c, 'isRecording', 'recording', 'recordingStatus'),
-      status: statusOf(c)
+    const devById = new Map((b.devices || []).map((d) => [d.deviceId, d]));
+    out.servers = (b.servers || []).map((s) => ({
+      id: s.serverId,
+      name: s.serverName || 'Сервер',
+      address: Array.isArray(s.ipAddress) ? s.ipAddress.join(', ') : (s.ipAddress || ''),
+      clusterIp: s.ipAddressForCluster || '',
+      version: s.fullVersion || s.version || '',
+      os: s.osType || '',
+      isMaster: !!s.isMaster,
+      state: s.state || '',
+      statusText: s.status || '',
+      status: serverStatus(s),
+      maxCameras: s.settings && s.settings.maxCameraCount
     }));
 
-    for (const s of out.servers) {
-      if (!s.id || s.id.startsWith('host:')) continue;
-      const dj = await safe('storages(' + s.name + ')', () => this.get(fill(EP.storages.path, { serverId: s.id })));
-      s.disks = asList(dj, 'disks', 'storages').map((d) => ({
-        name: pick(d, 'name', 'path', 'mountPoint', 'url') || '',
-        total: Number(pick(d, 'totalSpace', 'totalSize', 'capacity', 'total') || 0),
-        free: Number(pick(d, 'freeSpace', 'availableSpace', 'free', 'available') || 0),
-        low: !!d.isLowCapacity
-      }));
+    out.channels = (b.channels || []).map((c) => {
+      const d = devById.get(c.deviceId) || {};
+      const mode = c.recording && c.recording.recordingOption && c.recording.recordingOption.mode;
+      return {
+        id: c.channelId,
+        name: c.channelName || d.deviceName || 'Суваг',
+        serverId: d.serverId || '',
+        deviceId: c.deviceId,
+        model: d.model || '',
+        modelType: d.modelType || '',
+        ip: d.ipAddress || '',
+        failover: d.state === 'FAILOVER',
+        recordMode: mode || '',
+        recording: undefined,
+        status: channelStatus(c),
+        statusText: STATUS_TEXT[c.status] || c.status || ''
+      };
+    });
+
+    // Бичлэгийн бодит төлөв (50-иар багцлан)
+    const ids = out.channels.filter((c) => c.status !== 'decom').map((c) => c.id);
+    const recMap = new Map();
+    for (let i = 0; i < ids.length; i += 50) {
+      try {
+        const j = await this.get(EP.recordingStatus.path + qs({ channelId: ids.slice(i, i + 50).join(',') }));
+        for (const sv of (j && j.servers) || []) for (const ch of sv.channels || []) recMap.set(ch.channelId, !!ch.recordingStatus);
+      } catch (e) { out.errors.push('recording-status: ' + e.message); break; }
     }
+    for (const c of out.channels) if (recMap.has(c.id)) c.recording = recMap.get(c.id);
+
+    // Сервер бүрийн диск, ачаалал
+    await Promise.all(out.servers.map(async (s) => {
+      if (s.status !== 'ok') return;
+      try {
+        const j = await this.get(fill(EP.storages.path, { id: s.id }));
+        s.disks = ((j && j.disks) || []).filter((d) => !d.isSystemStorage).map((d) => ({
+          name: d.path || ('slot ' + d.slot), totalGB: d.totalCapacity || 0, freeGB: d.availableCapacity || 0,
+          low: !!d.isLowCapacity, enabled: d.enabled !== false, health: d.status || ''
+        }));
+      } catch (e) { out.errors.push(s.name + ' storages: ' + e.message); }
+      try {
+        const u = await this.get(fill(EP.usage.path, { id: s.id }));
+        s.cpu = u.cpu; s.memTotal = u.totalMemory; s.memUsed = u.usedMemory;
+      } catch (e) { out.errors.push(s.name + ' usage: ' + e.message); }
+    }));
     return out;
   }
 
   async events(limit) {
-    const j = await this.get(EP.events.path + qs(Object.assign({}, EP.events.query, limit ? { limit } : {})));
-    return asList(j, 'logs').map((l) => ({
-      time: pick(l, 'eventTime', 'time', 'timestamp', 'createdAt') || '',
-      type: pick(l, 'eventType', 'type', 'name') || '',
-      description: pick(l, 'description', 'message') || '',
+    const j = await this.get(EP.events.path + qs({ limit: limit || 30, sort: 'timestamp:desc' }));
+    return ((j && j.logs) || []).map((l) => ({
+      time: l.startTime ? new Date(l.startTime).toISOString() : '',
+      type: l.triggerText || l.trigger || '',
+      trigger: l.trigger || '',
+      description: l.sourceType && l.sourceName ? l.sourceType + ': ' + l.sourceName : (l.sourceName || ''),
       channels: (l.channels || []).map((c) => c.channelName).join(', ')
     }));
   }
+
+  async thumbnail(channelId) {
+    const r = await this.call(fill(EP.thumbnail.path, { id: channelId }) + qs({ quality: 'low', fixHeightSize: 270 }), { binary: true });
+    return { buf: r.buf, type: r.type };
+  }
 }
 
-module.exports = { BlazeClient, request, statusOf, asList };
+module.exports = { BlazeClient, request, channelStatus, serverStatus };

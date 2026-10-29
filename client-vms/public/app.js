@@ -48,6 +48,8 @@
       return '<div class="src"><div class="src-h"><div><div class="src-n"><i class="dot ' + st + '"></i>' + esc(s.name) + '</div>' +
         '<div class="src-m mono">' + esc(s.host) + ':' + esc(s.port) + ' · ' + esc(s.userName) + '</div></div>' +
         '<button type="button" class="btn sm danger" data-del="' + esc(s.id) + '" aria-label="' + esc(s.name) + ' серверийг хасах">Хасах</button></div>' +
+        (s.systemName ? '<div class="src-m">Систем: ' + esc(s.systemName) + (s.isClustered ? ' · <span class="tag">кластер</span>' : '') + '</div>' : '') +
+        (s.duplicateOf ? '<div class="src-m" style="color:var(--warn)">"' + esc(s.duplicateOf) + '"-тэй нэг систем тул давхар тоолохгүй</div>' : '') +
         '<div class="src-s"><span>Сервер: <b class="mono">' + esc(s.serverCount) + '</b></span><span>Камер: <b class="mono">' + esc(s.channelCount) + '</b></span>' +
         (s.latencyMs ? '<span class="muted">' + esc(s.latencyMs) + ' мс</span>' : '') + '</div>' +
         (s.error ? '<div class="src-e">' + esc(s.error) + '</div>' : (s.errors || []).map(function (e) { return '<div class="src-e">' + esc(e) + '</div>'; }).join('')) +
@@ -72,23 +74,33 @@
       var cnt = function (s) { return all.filter(function (c) { return c.status === s; }).length; };
       var isOpen = open[sv.id] !== undefined ? open[sv.id] : (idx === 0 || state.filter !== 'all' || !!state.q);
       var disks = (sv.disks || []).map(function (k) {
-        var used = k.total ? (1 - k.free / k.total) * 100 : 0;
-        return '<div class="disk' + (k.low ? ' low' : '') + '"><span class="mono">' + esc(k.name) + '</span> · ' + fmtBytes(k.free) + ' сул / ' + fmtBytes(k.total) +
+        var used = k.totalGB ? (1 - k.freeGB / k.totalGB) * 100 : 0;
+        var bad = k.low || (k.health && k.health !== 'OK');
+        return '<div class="disk' + (bad ? ' low' : '') + '"><span class="mono">' + esc(k.name) + '</span> · ' + fmtBytes(k.freeGB * 1e9) + ' сул / ' + fmtBytes(k.totalGB * 1e9) +
+          (k.health && k.health !== 'OK' ? ' · <b style="color:var(--faultT)">' + esc(k.health) + '</b>' : '') +
           '<div class="b"><i style="width:' + used.toFixed(1) + '%"></i></div></div>';
       }).join('');
       var rows = list.map(function (c) {
-        return '<tr><td><span class="st ' + c.status + '"><i class="dot ' + c.status + '"></i>' + LABEL[c.status] + '</span></td>' +
-          '<td>' + esc(c.name) + '</td><td class="mono">' + esc(c.ip) + '</td><td>' + esc(c.model) + '</td>' +
-          '<td>' + (c.recording === undefined ? '—' : (c.recording === true || /rec|on|true/i.test(String(c.recording)) ? 'Бичиж байна' : 'Бичихгүй')) + '</td></tr>';
+        var rec = c.recording === true ? 'Бичиж байна' : c.recording === false ? '<span style="color:var(--faultT)">Бичихгүй</span>' : '—';
+        if (c.recordMode === 'False') rec = '<span class="muted">Тохируулаагүй</span>';
+        return '<tr><td><span class="st ' + c.status + '" title="' + esc(c.statusText) + '"><i class="dot ' + c.status + '"></i>' + esc(c.status === 'fault' && c.statusText ? c.statusText : LABEL[c.status]) + '</span>' + (c.failover ? ' <span class="tag">failover</span>' : '') + '</td>' +
+          '<td>' + esc(c.name) + '</td><td class="mono">' + esc(c.ip) + '</td><td>' + esc(c.model) + (c.modelType && c.modelType !== 'Normal' ? ' <span class="tag">' + esc(c.modelType) + '</span>' : '') + '</td>' +
+          '<td>' + rec + '</td>' +
+          '<td>' + (c.status === 'ok' ? '<button type="button" class="btn sm" data-view="' + esc(c.sourceId) + '|' + esc(c.id) + '|' + esc(c.name) + '">Харах</button>' : '') + '</td></tr>';
       }).join('');
+      var load = [];
+      if (sv.isMaster) load.push('<span class="tag">master</span>');
+      if (sv.state && sv.state !== 'NORMAL') load.push('<span class="tag warn">' + esc(sv.state) + '</span>');
+      if (sv.cpu !== undefined) load.push('<span>CPU ' + Math.round(sv.cpu) + '%</span>');
+      if (sv.memTotal) load.push('<span>RAM ' + Math.round(sv.memUsed / sv.memTotal * 100) + '%</span>');
       return '<details class="grp" data-id="' + esc(sv.id) + '"' + (isOpen ? ' open' : '') + '><summary>' +
         '<span class="gname"><i class="dot ' + sv.status + '"></i>' + esc(sv.name) + '<span class="muted mono" style="font-weight:400;font-size:12px">' + esc(sv.address) + '</span></span>' +
         '<span class="gmeta">' + (sv.unreachable ? '<span style="color:var(--faultT)">Холбогдохгүй байна</span>' : '') +
-        (sv.version ? '<span>v' + esc(sv.version) + '</span>' : '') + (sv.os ? '<span>' + esc(sv.os) + '</span>' : '') +
+        load.join('') + (sv.version ? '<span>v' + esc(sv.version) + '</span>' : '') + (sv.os ? '<span>' + esc(sv.os) + '</span>' : '') +
         '<span>' + all.length + ' камер</span><span style="color:var(--okT)">' + cnt('ok') + '</span><span style="color:var(--faultT)">' + cnt('fault') + '</span><span style="color:var(--decomT)">' + cnt('decom') + '</span>' +
         '<span>эх үүсвэр: ' + esc(sv.sourceName) + '</span></span></summary>' +
         (disks ? '<div class="disks">' + disks + '</div>' : '') +
-        (rows ? '<div class="tbl"><table><thead><tr><th>Төлөв</th><th>Камер</th><th>IP</th><th>Загвар</th><th>Бичлэг</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+        (rows ? '<div class="tbl"><table><thead><tr><th>Төлөв</th><th>Камер</th><th>IP</th><th>Загвар</th><th>Бичлэг</th><th><span class="sr">Үйлдэл</span></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
           : '<div class="empty">' + (all.length ? 'Шүүлтэд тохирох камер алга' : 'Камер алга') + '</div>') +
         '</details>';
     }).join('');
@@ -148,6 +160,22 @@
     render();
   });
   $('q').addEventListener('input', function () { state.q = this.value.trim(); render(); });
+
+  // --- Камерын зураг (BLAZE thumbnail, 3 сек тутам) ---
+  var pvTimer = null;
+  function showPreview(src, id, name) {
+    $('pvName').textContent = name;
+    var tick = function () { $('pvImg').src = '/api/thumb/' + encodeURIComponent(src) + '/' + encodeURIComponent(id) + '?t=' + Date.now(); };
+    clearInterval(pvTimer); tick(); pvTimer = setInterval(tick, 3000);
+    $('preview').hidden = false; $('preview').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  $('tree').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-view]'); if (!b) return;
+    var p = b.dataset.view.split('|'); showPreview(p[0], p[1], p.slice(2).join('|'));
+  });
+  $('pvClose').addEventListener('click', function () { clearInterval(pvTimer); $('preview').hidden = true; $('pvImg').removeAttribute('src'); });
+  $('pvImg').addEventListener('error', function () { $('pvErr').hidden = false; this.style.visibility = 'hidden'; });
+  $('pvImg').addEventListener('load', function () { $('pvErr').hidden = true; this.style.visibility = 'visible'; });
 
   load(false); loadEvents();
   setInterval(function () { load(false); }, 30000);

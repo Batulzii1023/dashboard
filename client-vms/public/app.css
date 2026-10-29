@@ -1,0 +1,65 @@
+:root{--bg:#0B1117;--bg2:#0E151D;--panel:#121A23;--panel2:#17212C;--line:#22303F;--line2:#1B2633;--text:#E6EDF3;--muted:#93A3B5;--accent:#4EA1FF;--ok:#3FB950;--okT:#56D364;--fault:#F85149;--faultT:#FF7B72;--decom:#7D8590;--decomT:#B1BAC4;--warn:#E3B341}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 'IBM Plex Sans',system-ui,sans-serif}
+a{color:var(--accent)}
+.mono{font-family:'IBM Plex Mono',monospace}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.top{border-bottom:1px solid var(--line);background:var(--bg2)}
+.bar,.top nav,main{max-width:1440px;margin:0 auto;padding-left:24px;padding-right:24px}
+.bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-top:14px;padding-bottom:14px}
+.brand{display:flex;align-items:center;gap:12px}.t1{font-size:17px;font-weight:600}.t2{font-size:12px;color:var(--muted)}
+.right{display:flex;gap:10px;align-items:center;font-size:13px}
+.badge-mock{font-size:12px;padding:4px 8px;border:1px dashed #D29922;color:var(--warn);border-radius:6px}
+.top nav{display:flex;flex-wrap:wrap;gap:4px}
+.top nav a{padding:12px 14px;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent}
+.top nav a.active{color:var(--text);border-bottom-color:var(--accent);font-weight:500}
+main{padding-top:20px;padding-bottom:40px;display:flex;flex-direction:column;gap:16px}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px}
+h1{margin:0;font-size:22px;font-weight:600}.head p{margin:4px 0 0;font-size:13px}
+h2{margin:0 0 12px;font-size:15px;font-weight:600}
+.actions{display:flex;gap:8px}
+.btn{min-height:40px;padding:0 14px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);cursor:pointer;font:inherit}
+.btn:hover{border-color:#2F4256}.btn.primary{background:var(--accent);border:0;color:#06121F;font-weight:600}
+.btn.sm{min-height:32px;padding:0 10px;font-size:12px}.btn.danger:hover{border-color:var(--fault);color:var(--faultT)}
+.btn:disabled{opacity:.6;cursor:wait}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.form{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.f{display:flex;flex-direction:column;gap:6px;flex:1 1 170px}.f.small{flex:0 1 100px}.f.btns{flex-direction:row;flex:0 0 auto}
+label{font-size:12px;color:var(--muted)}
+input{min-height:38px;padding:0 10px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);font:inherit}
+input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.msg{min-height:20px;margin:10px 0 0;font-size:13px}.msg.err{color:var(--faultT)}.msg.ok{color:var(--okT)}
+.small-t{font-size:12px;margin:6px 0 0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.kpi .l{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}.kpi .v{font:600 28px 'IBM Plex Mono',monospace}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot.ok{background:var(--ok)}.dot.fault{background:var(--fault)}.dot.decom{background:var(--decom);border-radius:2px}.dot.unknown{background:#3A4552}
+.cols{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.side{flex:1 1 340px;min-width:0}.main{flex:999 1 640px;min-width:0}
+.src{border:1px solid var(--line2);border-radius:8px;padding:12px;margin-bottom:10px;background:var(--bg2)}
+.src-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.src-n{font-weight:600;display:flex;align-items:center;gap:8px}.src-m{font-size:12px;color:var(--muted);margin-top:3px}
+.src-e{font-size:12px;color:var(--faultT);margin-top:6px;word-break:break-word}
+.src-s{display:flex;gap:14px;font-size:12px;margin-top:8px}
+.panel-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.panel-head h2{margin:0}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:flex;gap:4px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.seg button{display:flex;align-items:center;gap:6px;min-height:32px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font:inherit;font-size:12px}
+.seg button[aria-pressed=true]{background:#1F3A5C;color:var(--text)}
+.grp{border:1px solid var(--line2);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.grp>summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding:12px 14px;background:var(--bg2)}
+.grp>summary::-webkit-details-marker{display:none}
+.gname{display:flex;align-items:center;gap:8px;font-weight:600}.gmeta{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.disks{display:flex;flex-wrap:wrap;gap:10px;padding:10px 14px;border-top:1px solid var(--line2)}
+.disk{flex:1 1 150px;font-size:11px;color:var(--muted)}.disk .b{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:4px}.disk .b i{display:block;height:100%;background:var(--accent)}.disk.low .b i{background:var(--fault)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+th{text-align:left;font-size:12px;font-weight:500;color:var(--muted);padding:8px 14px;border-top:1px solid var(--line2)}
+td{padding:8px 14px;border-top:1px solid var(--line2)}
+.st{display:inline-flex;align-items:center;gap:6px}.st.ok{color:var(--okT)}.st.fault{color:var(--faultT)}.st.decom{color:var(--decomT)}.st.unknown{color:var(--muted)}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+.events{display:flex;flex-direction:column}
+.ev{display:grid;grid-template-columns:150px 160px minmax(0,1fr);gap:12px;padding:9px 0;border-top:1px solid var(--line2);font-size:13px}
+@media (max-width:640px){.ev{grid-template-columns:1fr}.f.btns{flex:1 1 100%}}

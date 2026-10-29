@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client VMS · BLAZE кластер</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <div class="brand">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4EA1FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>
+      <div><div class="t1">Мэдээллийн нэгдсэн цонх</div><div class="t2">Замын хөдөлгөөний удирдлагын төв · AI аналитик + VMS</div></div>
+    </div>
+    <div class="right">
+      <span id="mockBadge" class="badge-mock" hidden>MOCK горим</span>
+      <span id="updated" class="muted mono"></span>
+    </div>
+  </div>
+  <nav aria-label="Үндсэн цэс">
+    <a href="https://batulzii1023.github.io/dashboard/Main.dc.html">Нэгдсэн тойм</a>
+    <a href="https://batulzii1023.github.io/dashboard/Cameras.dc.html">Камерын төлөв</a>
+    <a href="https://batulzii1023.github.io/dashboard/Event.dc.html">Арга хэмжээний горим</a>
+    <a href="https://batulzii1023.github.io/dashboard/Reports.dc.html">Архив ба тайлан</a>
+    <a href="https://batulzii1023.github.io/dashboard/Access.dc.html">Эрх ба тохиргоо</a>
+    <a href="./" class="active" aria-current="page">Client VMS</a>
+  </nav>
+</header>
+
+<main>
+  <div class="head">
+    <div>
+      <h1>Client VMS · BLAZE кластер</h1>
+      <p class="muted">Hanwha Vision BLAZE серверүүдийг IP болон хэрэглэгчээр нь нэмж, бүх камерыг нэг кластер болгон харуулна</p>
+    </div>
+    <div class="actions">
+      <button type="button" id="btnRefresh" class="btn">Шинэчлэх</button>
+      <button type="button" id="btnAdd" class="btn primary">+ Сервер нэмэх</button>
+    </div>
+  </div>
+
+  <section id="addPanel" class="panel" hidden aria-label="Сервер нэмэх">
+    <h2>BLAZE сервер нэмэх</h2>
+    <form id="addForm" class="form">
+      <div class="f"><label for="fName">Нэр</label><input id="fName" name="name" placeholder="ж: blzsvr1"></div>
+      <div class="f"><label for="fHost">IP хаяг / хост *</label><input id="fHost" name="host" required placeholder="10.10.20.11"></div>
+      <div class="f small"><label for="fPort">Порт</label><input id="fPort" name="port" type="number" value="8000"></div>
+      <div class="f"><label for="fUser">Хэрэглэгч *</label><input id="fUser" name="userName" required autocomplete="username"></div>
+      <div class="f"><label for="fPass">Нууц үг *</label><input id="fPass" name="password" type="password" required autocomplete="current-password"></div>
+      <div class="f btns"><button type="submit" class="btn primary" id="btnSave">Нэвтэрч нэмэх</button><button type="button" class="btn" id="btnCancel">Болих</button></div>
+    </form>
+    <p id="addMsg" class="msg" role="status"></p>
+    <p class="muted small-t">Нэвтрэлтийг <span class="mono">POST /api/v1/auth/tokens</span>-ээр шалгана. Нууц үг gateway дээр шифрлэгдэж хадгалагдах бөгөөд хөтөч рүү буцаж ирэхгүй.</p>
+  </section>
+
+  <section class="kpis" id="kpis" aria-label="Гол үзүүлэлт"></section>
+
+  <div class="cols">
+    <section class="panel side" aria-label="Холбогдсон серверүүд">
+      <h2>Бүртгэлтэй серверүүд</h2>
+      <div id="sources"></div>
+    </section>
+
+    <section class="panel main" aria-label="Кластер">
+      <div class="panel-head">
+        <h2>Кластер · сервер → камер</h2>
+        <div class="filters">
+          <label class="sr" for="q">Хайх</label>
+          <input id="q" type="search" placeholder="Камер, IP, загвар">
+          <div role="group" aria-label="Төлвөөр шүүх" class="seg" id="statusSeg">
+            <button type="button" data-st="all" aria-pressed="true">Бүгд</button>
+            <button type="button" data-st="ok" aria-pressed="false"><i class="dot ok"></i>Хэвийн</button>
+            <button type="button" data-st="fault" aria-pressed="false"><i class="dot fault"></i>Гэмтэлтэй</button>
+            <button type="button" data-st="decom" aria-pressed="false"><i class="dot decom"></i>Хасах</button>
+          </div>
+        </div>
+      </div>
+      <div id="tree"></div>
+    </section>
+  </div>
+
+  <section class="panel" aria-label="Үйл явдал">
+    <h2>Сүүлийн үйл явдал · бүх сервер</h2>
+    <div id="events" class="events"></div>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

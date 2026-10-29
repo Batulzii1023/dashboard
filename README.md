@@ -45,3 +45,7 @@ python3 tools/build.py
 ```
 
 Хаяг: https://batulzii1023.github.io/dashboard/
+
+## Client VMS (BLAZE кластер)
+
+`client-vms/` — Hanwha BLAZE серверүүдийг IP/хэрэглэгчээр нэмж нэг кластер болгон харуулах gateway + UI. Дэлгэрэнгүйг [client-vms/README.md](client-vms/README.md)-ээс үзнэ үү.
